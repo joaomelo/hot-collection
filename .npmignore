@@ -1,0 +1,11 @@
+demo/**/*
+config/
+coverage/
+lib/src/
+lib/config/
+node_modules/
+.vscode/
+.*
+*.config.*
+jsconfig.json
+webpack.*
