@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-content>
+      <AddItem />
       <ListItems />
     </v-content>
     <v-overlay :value="overlay">
@@ -15,10 +16,11 @@
 <script>
 import { authMachine } from './services';
 import ListItems from './list-items';
+import AddItem from './add-item';
 
 export default {
   name: 'App',
-  components: { ListItems },
+  components: { ListItems, AddItem },
   computed: {
     overlay () {
       return authMachine.status === 'UNSOLVED';
