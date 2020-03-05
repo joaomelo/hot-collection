@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { itemsCol } from './store';
+import { itemsCol } from './items-store';
 
 export default {
   name: 'AddItem',

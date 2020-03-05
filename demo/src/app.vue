@@ -1,30 +1,35 @@
 <template>
   <v-app>
+    <v-app-bar
+      dense
+      app
+      dark
+      color="primary"
+    >
+      <v-toolbar-title>Hot Collection Demo</v-toolbar-title>
+      <v-spacer />
+      <v-btn
+        text
+        to="/single"
+      >
+        Single
+      </v-btn>
+      <v-btn
+        text
+        to="/relationship"
+      >
+        Relationships
+      </v-btn>
+    </v-app-bar>
     <v-content>
-      <AddItem />
-      <ListItems />
+      <router-view />
     </v-content>
-    <v-overlay :value="overlay">
-      <v-progress-circular
-        indeterminate
-        size="64"
-      />
-    </v-overlay>
   </v-app>
 </template>
 
 <script>
-import { authMachine } from './services';
-import ListItems from './list-items';
-import AddItem from './add-item';
 
 export default {
-  name: 'App',
-  components: { ListItems, AddItem },
-  computed: {
-    overlay () {
-      return authMachine.status === 'UNSOLVED';
-    }
-  }
+  name: 'App'
 };
 </script>
