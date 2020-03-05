@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h1 class="text-center">
+      Items
+    </h1>
     <AddItem />
     <ListItems />
   </div>

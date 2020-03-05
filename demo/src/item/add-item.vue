@@ -1,38 +1,38 @@
 <template>
-  <div>
-    <v-card
-      max-width="350px"
-      min-width="250px"
-    >
-      <v-card-title class="justify-center">
-        Item
-      </v-card-title>
-      <v-card-text>
-        <v-form>
+  <v-form ref="form">
+    <v-container>
+      <v-row>
+        <v-col>
           <v-text-field
             v-model="title"
             label="Title"
             :rules="[v => !!v || 'Title is required']"
             required
           />
+        </v-col>
+        <v-col>
           <v-text-field
             v-model="description"
             label="Description"
           />
-        </v-form>
-      </v-card-text>
-      <v-divider />
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          color="success"
-          @click="addItem"
+        </v-col>
+        <v-col
+          cols="auto"
+          align-self="center"
         >
-          Add Item
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </div>
+          <v-btn
+            fab
+            dark
+            small
+            color="primary"
+            @click="addItem"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script>
@@ -48,7 +48,9 @@ export default {
   },
   methods: {
     addItem () {
-      itemsCol.add({ title: this.title, description: this.description });
+      if (this.$refs.form.validate()) {
+        itemsCol.add({ title: this.title, description: this.description });
+      }
     }
   }
 };

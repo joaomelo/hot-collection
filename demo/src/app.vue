@@ -22,7 +22,11 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <router-view />
+      <v-row justify="center">
+        <v-col cols="10">
+          <router-view />
+        </v-col>
+      </v-row>
     </v-content>
   </v-app>
 </template>
