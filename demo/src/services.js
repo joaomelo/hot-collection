@@ -18,11 +18,11 @@ const firebaseConfig = {
 const fireapp = firebase.initializeApp(firebaseConfig);
 const firedb = fireapp.firestore();
 
-//init auth
+// init auth
 const fireauth = fireapp.auth();
 const authMachine = new AuthMachine(fireauth);
 Vue.observable(authMachine);
-//log the default user
+// login the default user
 authMachine.service.signInWithEmailAndPassword(process.env.USER, process.env.PASS);
 
 export { firebase, fireapp, firedb, authMachine };

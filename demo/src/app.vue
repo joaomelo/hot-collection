@@ -1,21 +1,26 @@
 <template>
   <v-app>
     <v-content>
-      <p>Demo<p>
+      <ListItems />
     </v-content>
     <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>  
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </v-app>
 </template>
 
 <script>
-import {authMachine} from './services';
+import { authMachine } from './services';
+import ListItems from './list-items';
 
 export default {
   name: 'App',
+  components: { ListItems },
   computed: {
-    overlay(){
+    overlay () {
       return authMachine.status === 'UNSOLVED';
     }
   }
