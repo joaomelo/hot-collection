@@ -1,16 +1,25 @@
 <template>
-  <div>
-    <v-list-item
-      v-for="(item, i) in items"
-      :key="i"
-      two-line
-    >
-      <v-list-item-content>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
-        <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-  </div>
+  <v-data-table
+    :headers="headers"
+    :items="items"
+    sort-by="title"
+  >
+    <template v-slot:item.action="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -20,11 +29,24 @@ export default {
   name: 'ListItems',
   data () {
     return {
+      headers: [
+        { text: 'Title', value: 'title' },
+        { text: 'Description', value: 'description' },
+        { text: 'Actions', value: 'action', sortable: false, align: 'end' }
+      ],
       items: []
     };
   },
   mounted () {
     itemsCol.subscribe(items => { this.items = items; });
+  },
+  methods: {
+    deleteItem (item) {
+      itemsCol.del(item.id);
+    },
+    editItem (item) {
+      console.log('edited', item);
+    }
   }
 };
 </script>
