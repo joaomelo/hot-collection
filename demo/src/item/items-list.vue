@@ -26,7 +26,7 @@
 import { itemsCol } from './items-store';
 
 export default {
-  name: 'ListItems',
+  name: 'ItemsList',
   data () {
     return {
       headers: [
@@ -45,12 +45,8 @@ export default {
       itemsCol.del(item.id);
     },
     editItem (item) {
-      console.log('edited', item);
+      this.$emit('edit', item);
     }
   }
 };
 </script>
-
-<style>
-
-</style>

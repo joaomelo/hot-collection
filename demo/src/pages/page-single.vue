@@ -1,22 +1,12 @@
 <template>
-  <div>
-    <h1 class="text-center">
-      Items
-    </h1>
-    <AddItem />
-    <ListItems />
-  </div>
+  <ItemsCrud />
 </template>
 
 <script>
-import ListItems from '../item/list-items';
-import AddItem from '../item/add-item';
+import ItemsCrud from '../item/items-crud';
 
 export default {
   name: 'PageSingle',
-  components: {
-    AddItem,
-    ListItems
-  }
+  components: { ItemsCrud }
 };
 </script>
