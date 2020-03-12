@@ -20,35 +20,19 @@
       </v-row>
     </v-container>
 
-    <ItemEdit
-      ref="itemEdit"
-      @cancel="editCancel"
-      @save="editSave"
-    />
-    <ItemsList @edit="edit" />
+    <ItemsList />
   </div>
 </template>
 
 <script>
-import ItemEdit from './item-edit';
 import ItemsList from './items-list';
-
-import { itemsCol } from './items-store';
 
 export default {
   name: 'CrudItem',
-  components: { ItemEdit, ItemsList },
+  components: { ItemsList },
   methods: {
-    add () {
-      this.$refs.itemEdit.add();
-    },
-    edit (item) {
-      this.$refs.itemEdit.edit(item);
-    },
-    save (data) {
-      if (data.mode === 'add') {
-        itemsCol.add(data.item);
-      }
+    addItem () {
+      this.$router.push({ path: '/item/add' });
     }
   }
 };

@@ -45,7 +45,7 @@ export default {
       itemsCol.del(item.id);
     },
     editItem (item) {
-      this.$emit('edit', item);
+      this.$router.push({ path: `/item/${item.id}` });
     }
   }
 };

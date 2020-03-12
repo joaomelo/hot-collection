@@ -5,13 +5,15 @@ import { authMachine } from './services';
 
 import PageOverlay from './pages/page-overlay';
 import PageRelationship from './pages/page-relationship';
-import PageSingle from './pages/page-single';
+import ItemsCrud from './item/items-crud';
+import ItemEdit from './item/item-edit';
 
 Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: PageOverlay },
-  { path: '/single', component: PageSingle },
+  { path: '/items/', component: ItemsCrud },
+  { path: '/item/:id', component: ItemEdit, props: true },
   { path: '/relationship', component: PageRelationship }
 ];
 
@@ -25,7 +27,7 @@ authMachine.subscribe(({ status }) => {
   const statusRoutes = {
     UNSOLVED: '/',
     SIGNOUT: '/',
-    SIGNIN: '/single'
+    SIGNIN: '/items'
   };
 
   const newRoute = statusRoutes[status];

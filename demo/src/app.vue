@@ -10,9 +10,9 @@
       <v-spacer />
       <v-btn
         text
-        to="/single"
+        to="/items"
       >
-        Single
+        Items
       </v-btn>
       <v-btn
         text
