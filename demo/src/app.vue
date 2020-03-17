@@ -10,15 +10,15 @@
       <v-spacer />
       <v-btn
         text
-        to="/items"
+        to="/projects"
       >
-        Items
+        Projects
       </v-btn>
       <v-btn
         text
-        to="/relationship"
+        to="/teams"
       >
-        Relationships
+        Teams
       </v-btn>
     </v-app-bar>
     <v-content>
