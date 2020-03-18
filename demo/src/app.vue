@@ -10,13 +10,13 @@
       <v-spacer />
       <v-btn
         text
-        to="/projects"
+        to="/pages/projects"
       >
         Projects
       </v-btn>
       <v-btn
         text
-        to="/teams"
+        to="/pages/teams"
       >
         Teams
       </v-btn>

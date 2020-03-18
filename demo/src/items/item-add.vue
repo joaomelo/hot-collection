@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col>
         <h1 class="text-center">
-          {{ `${itemType}s` }}
+          {{ schema.labels.plural }}
         </h1>
       </v-col>
       <v-col
@@ -13,7 +13,7 @@
           color="primary"
           @click="addItem"
         >
-          Add {{ itemType }}
+          Add {{ schema.labels.singular }}
         </v-btn>
       </v-col>
     </v-row>
@@ -22,16 +22,17 @@
 
 <script>
 export default {
-  name: 'AddBar',
+  name: 'ItemAdd',
   props: {
-    itemType: {
-      type: String,
+    schema: {
+      type: Object,
       required: true
     }
   },
   methods: {
     addItem () {
-      this.$router.push({ path: `/${this.itemType}/add` });
+      const route = this.schema.labels.singular.toLowerCase();
+      this.$router.push({ path: `/${route}/add` });
     }
   }
 };

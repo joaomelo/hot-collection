@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import ItemEdit from '../helpers/item-edit';
+import ItemEdit from '../items/item-edit';
 import { projectsCol } from './projects-store';
 
 export default {
