@@ -1,6 +1,6 @@
 {
   "name": "@joaomelo/lib-template",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "template library",
   "main": "lib/dist/index.js",
   "scripts": {
