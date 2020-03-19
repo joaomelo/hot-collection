@@ -51,8 +51,8 @@ export default {
       this.schema.collection.del(item.id);
     },
     editItem (item) {
-      const singularSmallCaps = this.schema.labels.singular.toLowerCase();
-      this.$router.push({ path: `/${singularSmallCaps}/${item.id}` });
+      const collectionType = this.schema.labels.plural.toLowerCase();
+      this.$router.push({ path: `/item/${collectionType}/${item.id}` });
     }
   }
 };

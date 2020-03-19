@@ -5,16 +5,14 @@ import { authMachine } from './services';
 
 import PageOverlay from './pages/page-overlay';
 import ItemsPage from './items/items-page';
-import ProjectEdit from './projects/project-edit';
-import TeamEdit from './teams/team-edit';
+import ItemEdit from './items/item-edit';
 
 Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: PageOverlay },
-  { path: '/pages/:itemsType', component: ItemsPage, props: true },
-  { path: '/project/:id', component: ProjectEdit, props: true },
-  { path: '/team/:id', component: TeamEdit, props: true }
+  { path: '/pages/:collectionType', component: ItemsPage, props: true },
+  { path: '/item/:collectionType/:itemId', component: ItemEdit, props: true }
 ];
 
 const router = new VueRouter({

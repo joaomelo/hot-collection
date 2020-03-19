@@ -7,6 +7,7 @@ module.exports = {
   },
   rules: {
     semi: ['error', 'always'],
+    'no-debugger': 'off',
     'jest/no-test-callback': 'off'
   },
   extends: [

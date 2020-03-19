@@ -31,8 +31,8 @@ export default {
   },
   methods: {
     addItem () {
-      const route = this.schema.labels.singular.toLowerCase();
-      this.$router.push({ path: `/${route}/add` });
+      const collectionType = this.schema.labels.plural.toLowerCase();
+      this.$router.push({ path: `/item/${collectionType}/add` });
     }
   }
 };

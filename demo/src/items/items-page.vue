@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { schemas } from '../schema';
+import { schemas } from '../schemas';
 import ItemAdd from './item-add';
 import ItemsList from './items-list';
 
@@ -14,13 +14,13 @@ export default {
   name: 'ItemsPage',
   components: { ItemAdd, ItemsList },
   props: {
-    itemsType: {
+    collectionType: {
       type: String,
       required: true
     }
   },
   computed: {
-    schema () { return schemas[this.itemsType]; }
+    schema () { return schemas[this.collectionType]; }
   }
 };
 </script>

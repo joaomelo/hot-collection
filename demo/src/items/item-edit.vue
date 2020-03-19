@@ -3,11 +3,16 @@
     <v-card-title
       class="justify-center"
     >
-      {{ itemType }}
+      {{ collectionType }}
     </v-card-title>
     <v-card-text>
       <v-form ref="form">
-        <slot :item="item" />
+        <ItemField
+          v-for="field in schema.fields"
+          :key="field.key"
+          v-model="item[field.key]"
+          :options="field"
+        />
       </v-form>
     </v-card-text>
     <v-divider />
@@ -31,49 +36,44 @@
 </template>
 
 <script>
-import { reactive } from '@vue/composition-api';
+import { schemas } from '../schemas';
+import ItemField from './item-field';
 
 export default {
   name: 'ItemEdit',
+  components: { ItemField },
   props: {
-    itemType: {
-      type: String,
-      required: true
-    },
     itemId: {
       type: String,
       required: true
     },
-    hotCollection: {
-      type: Object,
+    collectionType: {
+      type: String,
       required: true
     }
   },
-  setup (props, context) {
-    const mode = props.itemId === 'add' ? 'add' : 'edit';
-    const modeOutfit = {
-      add: {
-        item: () => reactive({}),
-        save: item => props.hotCollection.add(item)
-      },
-      edit: {
-        item: () => reactive(props.hotCollection.getItem(props.itemId)),
-        save: item => props.hotCollection.set(props.itemId, item)
-      }
-    };
-
-    const item = modeOutfit[mode].item();
-    const close = () => context.root.$router.go(-1);
-    const save = () => {
-      modeOutfit[mode].save(item);
-      close();
-    };
+  data () {
+    const mode = this.itemId === 'add' ? 'add' : 'edit';
+    const schema = schemas[this.collectionType];
 
     return {
-      item,
-      save,
-      close
+      mode,
+      schema,
+      item: mode === 'add' ? {} : schema.collection.getItem(this.itemId)
     };
+  },
+  methods: {
+    save () {
+      if (this.mode === 'add') {
+        this.schema.collection.add(this.item);
+      } else {
+        this.schema.collection.set(this.itemId, this.item);
+      };
+      this.close();
+    },
+    close () {
+      this.$router.go(-1);
+    }
   }
 };
 
