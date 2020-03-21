@@ -67,7 +67,7 @@ export default {
       if (this.mode === 'add') {
         this.schema.collection.add(this.item);
       } else {
-        this.schema.collection.set(this.itemId, this.item);
+        this.schema.collection.set(this.item);
       };
       this.close();
     },
