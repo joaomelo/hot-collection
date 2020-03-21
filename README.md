@@ -26,6 +26,12 @@ Same as last one.
 
 Ending message recapitulating usage. Maybe inform about pitfalls or trade-offs involving the library usage.
 
+# Limitations
+
+## Subcollections
+
+Dos not know how to handle subcollections. The only one created is version. If savemode is turned d=to default and document is deleted, if a doument is deleted, firestore behaviour is to delete all document data but preserve the subcollection in it interity. 
+
 # Testing and Demo
 
 If available, inform how to clone and install the package. Also instruction to run the demo and tests. If involved in the process, describe how environment variables are injected.
