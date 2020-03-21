@@ -1,16 +1,11 @@
-import Vue from 'vue';
-import HotCollection from '__lib';
-import { firedb } from '../services';
-
-const teamsCollection = new HotCollection(firedb, 'teams');
-Vue.observable(teamsCollection.items);
+import { collections } from './collections';
 
 const teams = {
   labels: {
     singular: 'Team',
     plural: 'Teams'
   },
-  collection: teamsCollection,
+  collection: collections.teams,
   fields: [
     {
       label: 'Name',

@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     items () {
-      return this.schema.collection.items;
+      return this.schema.collection.items.filter(i => !i.deleted);
     },
     tableHeader () {
       const tableHeader = {};

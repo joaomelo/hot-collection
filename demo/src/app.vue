@@ -24,7 +24,7 @@
     <v-content>
       <v-row justify="center">
         <v-col cols="10">
-          <router-view />
+          <router-view :key="$route.fullPath" />
         </v-col>
       </v-row>
     </v-content>
