@@ -1,11 +1,10 @@
-import { collections } from './collections';
+import { createHotCollection } from './collections';
 
 const teams = {
   labels: {
     singular: 'Team',
     plural: 'Teams'
   },
-  collection: collections.teams,
   fields: [
     {
       label: 'Name',
@@ -15,5 +14,7 @@ const teams = {
     }
   ]
 };
+
+teams.collection = createHotCollection(teams);
 
 export { teams };

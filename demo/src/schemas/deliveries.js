@@ -1,9 +1,9 @@
 import { createHotCollection } from './collections';
 
-const projects = {
+const deliveries = {
   labels: {
-    singular: 'Project',
-    plural: 'Projects'
+    singular: 'Delivery',
+    plural: 'Deliveries'
   },
   fields: [
     {
@@ -20,6 +20,6 @@ const projects = {
   ]
 };
 
-projects.collection = createHotCollection(projects);
+deliveries.collection = createHotCollection(deliveries);
 
-export { projects };
+export { deliveries };
