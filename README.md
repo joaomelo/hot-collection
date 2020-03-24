@@ -8,11 +8,11 @@ Hot-Collection is a javascript package that abstracts Firestore collections in f
 
 As an independent solo developer i find myself somewhat obsessed by solutions that reduce the amount of repeated code I have do produce. In this regard Firestore is awesome. It is fast, reliable, well documented and easy to use. Even so, since Firebase is designed for a broad spectrum of use cases, i see myself repeating some infrastructure code to manage data between web apps.
 
-This package aims to encapsulate this approach in a single class of data management that can make a developer life easily when interacting with Firestore. The goal is to help fellow developers focus more on business and less in technology.
+This package aims to encapsulate this approach in a single class for data management objects that can make a developer life easily when interacting with Firestore. The goal is to help fellow developers focus more on business and less in technology.
 
 # Usage
 
-The library provides a HotCollection class. When as instance is created it manages a Firestore collection adapted to the options provided. The class provides method to manipulate data and subscribe to data changes.
+The library provides the `HotCollection` class. Each of it instances are capable to manage a Firestore collection. The class provides methods to read and manipulate data.
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ Install with npm.
 
     npm install @joaomelo/hot-collection
 
-The first step is to import and instantiate a HotCollection object. The required arguments are the Firestore reference and the collection name.
+The first step is to import and instantiate a HotCollection object. The required arguments are the Firestore reference and the collection name. Let's see.
 
     import * as firebase from 'firebase/app';
     import 'firebase/firestore';
@@ -30,75 +30,120 @@ The first step is to import and instantiate a HotCollection object. The required
       // config data
     });
 
-    const db = fireapp.firestore();
-    itemsCollection = new HotCollection(db, 'items')
+    const firestoreDb = fireapp.firestore();
+    itemsCol = new HotCollection(firestoreDb, 'items')
 
-`ItemCollection` will now expose features for reading and writing data in the Firestore `items` collection.
+`ItemCol` will now expose features for reading and writing data in the Firestore `items` collection.
+
+## Mocking the Database
+
+The HotCollection constructor also accepts a string instead of the firestore reference as it's first argument. That will make the HotCollection instance use an internal very crud database.  
+
+    const foo = new HotCollection('mock', 'foo')
+    const bar = new HotCollection('mock', 'bar')
+
+On those cases, all data will be stored in-memory and erased even between page reloads. 
+
+This is useful for prototyping apps and experimenting with the package.
 
 ## Reading Data
 
-Every data update in the Firestore collection will trigger a HotCollection object to update its data.
+Every update in the Firestore collection will trigger a HotCollection object to sync the corresponding data.
 
 ### Items Property
 
-This data is exposed in the `items` property which returns an `array` with all the documents inside the collection. you could do something like this show all the values of a name field inside a people collection in Firestore.
+This corresponding data is exposed in the `items` array property. All the collection documents are stored as javascript objects. Bellow we show the name field values inside an employee collection.
+  
+    import HotCollection from "@joaomelo/hot-collection";
+    import { firebaseDb } from "./firebase-init";
 
-    // import and initialize firestore in db const
-    import HotCollection from '@joaomelo/hot-collection';
-    
-    const container = document.querySelect('#container')
+    const db = firebaseDb || "mock";
+    const employeeCol = new HotCollection(db, "items");
+    employeeCol.add({ name: "John" });
+    employeeCol.add({ name: "Jane" });
 
-    const peopleCollection = new HotCollection(db, 'people');
-    peopleCollection.forEach(person => container.appendChild(`<p>${person.name}</p>`))
+    const html = employeeCol.items.reduce((a, i) => a + `<p>${i.name}</p>`, "");
+    document.getElementById("app").innerHTML = html;
 
-The problem with that approach is that reading and writing data in Firestore is an assyncronous operation. If the data changes the UI will not update and even if the internet is slow the `forEach` could be called before the hot collection object could load all the documents.
+> You can play with the example above [here](https://codesandbox.io/embed/hot-collection-1-8770l?fontsize=14&hidenavigation=1&module=%2Findex.js&theme=dark).
+
+The problem with that approach is that reading and writing data in Firestore is an asynchronous exercise. If the data changes the UI will not update. Also, the `reduce` could be called before the HotCollection object load the documents from Firestore.
 
 ### Subscribing to Data Updates
 
-A more reasonable solution is to subscribe to data updates. All HotCollection instances exposes the `subscribe` method. You pass a function to that mehots and the hot collection object will call it every time data changes passing the updated array of items as the callback parameter. Let's rewrite our example.
+A more reasonable solution is to subscribe to data updates. HotCollection instances expose the `subscribe` method. You pass a callback function to that method and it will be invoked every time the data changes. 
 
-    // import and initialize firestore in db const
-    import HotCollection from '@joaomelo/hot-collection';
-    
-    const container = document.querySelect('#container')
+The callback function will receive the array of documents as first and only argument. Let's rewrite our example.
 
-    const peopleCollection = new HotCollection(db, 'people');
-    peopleCollection.subscribe(people => {
-      people.forEach(person => {
-          container.innerHtml = '';
-          container.appendChild(`<p>${person.name}</p>`);
-        })
+    import HotCollection from "@joaomelo/hot-collection";
+    import { firebaseDb } from "./firebase-init";
+
+    const db = firebaseDb || "mock";
+    const employeeCol = new HotCollection(db, "items");
+
+    const app = document.getElementById("app");
+    const reducer = (a, i) => a + `<p>${i.name}</p>`;
+    employeeCol.subscribe(items => {
+      app.innerHTML = employeeCol.items.reduce(reducer, "");
     });
 
-Cool! But what really is inside that parameter the subscription passes when triggered?
+    employeeCol.add({ name: "John" });
+    employeeCol.add({ name: "Jane" });
+
+> The example above is available [here](https://codesandbox.io/embed/hot-collection-sub-5lux1?fontsize=14&hidenavigation=1&theme=dark).
+
+Cool! But what really is inside that parameter the subscription passes when published?
 
 ### What is an Item?
 
-HotCollection items property and the parameter passed to subscriptions callbacks are pretty much the copies of the original documents inside the collection with few differences.
+HotCollection items property and the argument passed to subscriptions callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
-HotCollection will inject inside everyitemevery item the Firestore document key as an `id` property.
+HotCollection will inject inside every item the Firestore document key as an `id` property. So, if you use id as a field in any collection things will break.
 
-Also the object will not carry any sub collections subordinated to those documents.
+Also the object will not load any sub-collection subordinated to those documents.
 
 ## Manipulating Data
 
-HotCollection provides three methods to manipulate documents in a Firestore collection. They are `add`, `set` and `del`.
+HotCollection provides three methods to manipulate Firestore documents: `add`, `set` and `del`.
 
 ### Adding and Editing Data
 
-To add a document just pass an object to the HotCollection object `add` method. An automatic id will be provided by Firestore. 
+To add a document just pass an object to the HotCollection object `add` method. An automatic id will be provided by Firestore. Bellow we vape tiny app to add employees to a Firestore collection.
 
-    // import and initialize firestore in db const
-    import HotCollection from '@joaomelo/hot-collection';
-    
-    const projects = new HotCollection(db, 'projects');    
-    const newProject = {
-      title: 'project X',
-      description: 'A secret project'
-    }
-    projects.add(newProject);
+    import HotCollection from "@joaomelo/hot-collection";
+    import { firebaseDb } from "./firebase-init";
 
-If you want to alter an object or add it with a particular id, pass an object the set method but this time make sure there is an `id` property inside the object. If the id exists in the collection all data will be replaced by the one you provide
+    const get = id => document.getElementById(id);
+
+    const db = firebaseDb || "mock";
+    const employeeCol = new HotCollection(db, "employees");
+
+    const renderEmployee = e => `
+      <div class="card w-75 mb-1 mx-auto">
+        <div class="card-body"/>
+          <h5 class="card-title">Id: ${e.id}</h5>
+          <p class="card-text">Name: ${e.name}</p>
+          <p class="card-text">Dpto: ${e.dpto}</p>
+        </div>
+      </div>`;
+    employeeCol.subscribe(items => {
+      get("list").innerHTML = items.reduce((a, e) => a + renderEmployee(e), "");
+    });
+
+    get("save").addEventListener("click", () => {
+      employeeCol.add({
+        name: get("name").value,
+        dpto: get("dpto").value
+      });
+      get("name").value = "";
+      get("dpto").value = "";
+    });
+
+> You can play with the example above [here](https://codesandbox.io/embed/hot-collection-manipulate-lcj2e?fontsize=14&hidenavigation=1&theme=dark).
+
+If you want to edit an object or add it with an arbitrary id, use the `set` method. It also expects an object but you have to make sure this object has an `id` property inside. 
+
+If the id exists in the database collection all data will be replaced by the one you provided, if none is found the data will be inserted associated with the id value.
 
     // import and initialize firestore in db const
     import HotCollection from '@joaomelo/hot-collection';
