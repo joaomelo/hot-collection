@@ -1,6 +1,6 @@
 {
   "name": "@joaomelo/hot-collection",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Hot-Collection is a javascript package that abstracts Firestore collections in feature rich data managements objects inside web apps.",
   "main": "lib/dist/index.js",
   "scripts": {
