@@ -1,5 +1,3 @@
-THIS PACKAGE IS IN IT FINAL ADJUSTMENTS PHASE FOR FIRST FUNCTIONAL RELEASE. PLEASE, DOT NOT INSTALL IT RIGHT NOW. 
-
 # Hot-Collection
 
 Hot-Collection is a javascript package that abstracts Firestore collections in feature rich data managements objects inside web apps. It automatically load data when it changes, exposes the basic data manipulation operations as methods and make the developer experience more flexible with features like data versioning and adapters.
