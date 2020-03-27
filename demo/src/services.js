@@ -16,7 +16,8 @@ const firebaseConfig = {
 };
 
 const fireapp = firebase.initializeApp(firebaseConfig);
-const firedb = fireapp.firestore();
+const SHOULD_MOCK = false;
+const firedb = SHOULD_MOCK === '' ? 'mock' : fireapp.firestore();
 
 // init auth
 const fireauth = fireapp.auth();

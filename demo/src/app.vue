@@ -20,6 +20,12 @@
       >
         Teams
       </v-btn>
+      <v-btn
+        text
+        to="/pages/users"
+      >
+        Users
+      </v-btn>
     </v-app-bar>
     <v-content>
       <v-row justify="center">

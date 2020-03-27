@@ -1,11 +1,11 @@
 import { projects } from './projects';
 import { teams } from './teams';
-import { deliveries } from './deliveries';
+import { users } from './users';
 
 const schemas = {
   projects,
   teams,
-  deliveries
+  users
 };
 
 export { schemas };
