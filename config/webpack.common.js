@@ -5,7 +5,6 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
-  devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.json', '.vue']
   },
