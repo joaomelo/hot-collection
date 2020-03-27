@@ -1,18 +1,20 @@
 # Hot-Collection
 
-Hot-Collection is a javascript package that abstracts Firestore collections in feature rich data managements objects inside web apps. It automatically load data when it changes, exposes the basic data manipulation operations as methods and make the developer experience more flexible with features like data versioning and adapters.
+Hot-Collection is a javascript package that abstracts [Firestore](https://firebase.google.com/docs/firestore) collections read and write operations in simple to use data management objects. Those objects automatically load data when it changes and exposes the basic CRUD actions as methods. The package also offers complimentary features like data versioning and adapters.
 
 ## Motivation
 
-As an independent solo developer i find myself somewhat obsessed by solutions that reduce the amount of repeated code I have do produce. In this regard Firestore is awesome. It is fast, reliable, well documented and easy to use. Even so, since Firebase is designed for a broad spectrum of use cases, i see myself repeating some infrastructure code to manage data between web apps.
+As an independent solo developer, I find myself somewhat obsessed with solutions that reduce the amount of repeated code I have do produce. 
 
-This package aims to encapsulate this approach in a single class for data management objects that can make a developer life easily when interacting with Firestore. The goal is to help fellow developers focus more on business and less in technology.
+In this regard Firestore is awesome. It is fast, reliable, well documented and easy to use. Even so, since Firebase is designed for a broad spectrum of use cases, the need to duplicate code to manage data between web apps is not uncommon.
+
+This package tries to encapsulate some of that replication in a single reusable class. The goal is to help fellow developers focus more on business and less on technology.
 
 # Usage
 
-The library provides the `HotCollection` class. Each of it instances are capable to manage a Firestore collection. The class provides methods to read and manipulate data.
+The library provides the `HotCollection` class. Each of its instances is capable to manage a Firestore collection. The class provides methods to read and manipulate data.
 
-In a nutshell (think now i should use TL;DR) you create HotCollection objects passing a reference to Firestore and the collection name to the HotCollection constructor. After that you listen to updates by providing callbacks functions to the HotCollection subscribe method and manipulate collection's documents by calling add, set and del methods.
+In a nutshell, you create HotCollection objects passing a reference to Firestore and the collection name to its constructor. After that, you listen to updates by providing callbacks functions to the subscribe method and manipulate collection's documents by calling add, set and del methods.
 
 Let explore that in more detail.
 
@@ -22,7 +24,7 @@ Install with npm.
 
     npm install @joaomelo/hot-collection
 
-The first step is to import and instantiate a HotCollection object. The required arguments are the Firestore reference and the collection name. Let's see.
+The first step is to import and instantiate a HotCollection object. The required parameters are the Firestore reference and the collection name. Let's see.
 
     import * as firebase from 'firebase/app';
     import 'firebase/firestore';
@@ -32,29 +34,29 @@ The first step is to import and instantiate a HotCollection object. The required
       // config data
     });
 
-    const firestoreDb = fireapp.firestore();
-    itemsCol = new HotCollection(firestoreDb, 'items')
+    const db = fireapp.firestore();
+    itemsCol = new HotCollection(db, 'items')
 
-`ItemCol` will now expose features for reading and writing data in the Firestore `items` collection.
+The `itemsCol` will now expose features for reading and writing data in the Firestore corresponding `items` collection.
 
 ## Mocking the Database
 
-The HotCollection constructor also accepts a string instead of the Firestore reference as it's first argument. That will make the HotCollection instance use an internal very simple database. You do it like that:
+The HotCollection constructor also accepts a string instead of the Firestore reference as first argument. That will make the HotCollection instance use a very simple internal database. Like that:
 
     const foo = new HotCollection('mock', 'foo')
     const bar = new HotCollection('mock', 'bar')
 
-On those cases, all data will be stored in-memory and erased even between page reloads. 
+In those cases, all data will be stored in memory and erased even between page reloads. 
 
 This is useful for prototyping apps and experimenting with the package.
 
 ## Reading Data
 
-Every update in the Firestore collection will trigger a HotCollection object to sync the corresponding data. The following sections will explain how to read that data inside you app.
+Every Firestore collection update triggers the HotCollection object to sync corresponding data. The following sections explain how to read that data.
 
 ### Items Property
 
-The `items` property is an array with all the collection documents stored as javascript objects. Bellow we show the name field values inside an employee collection using the items property.
+The `items` property is an array with all collection documents stored as javascript objects. Bellow, we show in the browser the name field values inside an employee collection using the items property.
   
     import HotCollection from "@joaomelo/hot-collection";
     import { firebaseDb } from "./firebase-init";
@@ -69,13 +71,13 @@ The `items` property is an array with all the collection documents stored as jav
 
 > You can play with the example [here](https://codesandbox.io/embed/hot-collection-1-8770l?fontsize=14&hidenavigation=1&module=%2Findex.js&theme=dark).
 
-The problem with that approach is that reading and writing data in Firestore is an asynchronous exercise. If the data changes, the UI will not update. Also, the `reduce` could be called before the HotCollection object finishes loading the documents from Firestore through the internet.
+But reading and writing in Firestore is an asynchronous exercise. In the last example, the UI will not update if employee data changes. Also, we have no guarantee that the HotCollection object finished loading Firestore's documents when `reduce` is called.
 
 ### Subscribing to Data Updates
 
-A more reasonable solution is to subscribe to data updates. HotCollection instances expose the `subscribe` method. You pass a callback function to that method and that callback will be invoked every time the data changes. 
+A more reasonable solution is to subscribe to data updates. HotCollection instances expose the `subscribe` method. You pass a callback function to the subscribe method and that callback will be invoked every data change. 
 
-The callback function receives the array of documents as it first and only argument. Let's rewrite our last example.
+The callback function receives the array of documents as its first and only argument. Let's rewrite our last example.
 
     import HotCollection from "@joaomelo/hot-collection";
     import { firebaseDb } from "./firebase-init";
@@ -98,13 +100,13 @@ Cool! But what is really inside that argument the subscription passes to all cal
 
 ### What is an Item?
 
-HotCollection items property and the argument passed to subscriptions callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
+HotCollection items property and the argument passed to subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
-HotCollection will inject inside every item the Firestore document key as an `id` property. So, if you use id as a field in any collection things will break.
+HotCollection will inject inside every item the Firestore document key as an `id` property. So, don't use id as a field in any collection or things will break.
 
-Also the object will not load any sub-collection subordinated to those documents.
+Also, the HotCollection object will not load any sub-collection subordinated to its documents.
 
-In the last sections i will explain a optional and more flexible way the package offers to translate Firestore objects to app objects and vice-versa.
+In the last sections, I will explain an optional and more flexible way the package offers to translate Firestore documents to app objects and vice-versa.
 
 ## Manipulating Data
 
@@ -112,7 +114,7 @@ HotCollection provides three methods to manipulate Firestore documents: `add`, `
 
 ### Adding and Editing
 
-To add a document just pass an object to the HotCollection object `add` method. An automatic id will be provided by Firestore. Bellow we make a tiny app to add employees to a Firestore collection.
+To add a document just pass an object to the HotCollection `add` method. An automatic id will be provided by Firestore. Bellow, we make a tiny app to add employees to a Firestore collection.
 
     import HotCollection from "@joaomelo/hot-collection";
     import { firebaseDb, renderEmployee } from "./helpers";
@@ -137,9 +139,9 @@ To add a document just pass an object to the HotCollection object `add` method. 
 
 > You can play with the example above [here](https://codesandbox.io/embed/hot-collection-manipulate-lcj2e?fontsize=14&hidenavigation=1&theme=dark).
 
-If you want to edit an object or add it with an arbitrary id, use the `set` method. It also expects an object but you have to make sure this object has an `id` property inside. 
+If you want to edit a document or add one with an arbitrary id, use the `set` method. It also expects an object parameter but you have to make sure this object has an `id` property. 
 
-If a document with that id exists in the database collection all it's data will be replaced by the one found inside object you provided. If any document is found, a new document will be inserted and associated with that id value. Let's update out last example to add the edit capability.
+If a document with that id already exists in the Firestore collection all it's data will be replaced by what is inside the object you provided. If no document is found, a new one will be inserted and associated with the id. Let's update the last example with the editing capability.
 
     import HotCollection from "@joaomelo/hot-collection";
     import { fireDb, renderEmployee, getById, getAll, resetInputs } from "./helpers";
@@ -181,7 +183,7 @@ If a document with that id exists in the database collection all it's data will 
 
 ### Deleting
 
-To delete a document call the del method in a HotCollection object and pass the document id as argument. With few lines we can add the delete feature to our running example.
+To delete a document just call the `del` method in any HotCollection object. The only parameter is the document id. With few lines, we can add the delete feature to our running example.
 
     import HotCollection from "@joaomelo/hot-collection";
     import { fireDb, renderEmployee, getById, getAll, resetInputs } from "./helpers";
@@ -228,15 +230,15 @@ To delete a document call the del method in a HotCollection object and pass the 
 
 > You can play with the example above [here](https://codesandbox.io/embed/hot-collection-del-zcp8c?fontsize=14&hidenavigation=1&theme=dark).
 
-Just like that we have a simple record app syncing with a central database. Cool! But before wrapping up let us talk about a few more available package configurations and concerns you should take care.
+Just like that, we have a simple record app syncing with a central database. Sweet! But before wrapping up let us talk about a few more optional configurations and some concerns you should take care of.
 
 ## Options
 
-HotCollection constructor has a third optional parameter for options. Take a look about a hypothetical use case taking advantage off all the parameters.
-    
+HotCollection constructor has a third optional parameter for options. Below we have a hypothetical use case taking advantage of all the parameters.
+
     import HotCollection from "@joaomelo/hot-collection";
     
-    // others imports and initializations
+    // proper imports and initializations
 
     options = { 
       orderBy: 'some-field-name',
@@ -249,72 +251,72 @@ HotCollection constructor has a third optional parameter for options. Take a loo
 
     const collection = new HotCollection(db, "employees", options);
 
-Let's talk about thoose options.
+Let's talk about those options.
 
 ### Ordering
 
-The `orderBy` options property take a string value corresponding some field name in the collection. This will be use to order the items inside the collection. Yeah! That simple.
+The `orderBy` property takes a string corresponding to a field name in the collection. This will be used to order the items' property inside the HotCollection. Yeah! That simple.
 
 ### Adapters
 
-Adapter are functions apllyed to every item or doc before passing them to the next step. They are useful if you data structure does note represent how you would commonly use that collection in the business and ui layers.
+Adapters are functions applied to every item or doc before passing them to the next step. They are useful if your data structure does not represent how you use it in the business and UI layers.
 
-Both function take a object as the argument and must return another object.
+Both functions have an object as the only parameter and return another object as the transformed data.
 
-The function assigned to `itemToDoc` property will be called before adding and setting data to the database. It `docToItem` counterpart will be called before returning the database data to the HotCollection state items array.
+The function assigned to `itemToDoc` property will be called before adding and setting data to the database. The `docToItem` counterpart will be called before returning the database document to the HotCollection items array.
 
 ### Versions to the rescue
 
-The property `saveMode` accepts one of two string values: `'default'` and `'safe'`. All this README file until here describes the default behavior. When setted to `'safe'` an interesting behavior is activeted in HotCollection objects.
+The property `saveMode` accepts one of two string values: `'default'` or `'safe'`. All this README until here describes the default way. When set to `'safe'` an interesting behavior is activated.
 
-In safe mode every time a documented is added or setted a copy of it will be saved in a subcollection called `versions` inside the document. Together with all the field data of that version, HotCollection will insert the moment that document was modified and (if available) that id and email of the Firebase user who made the operation.
+In safe mode, every time a document is added or set, a copy of it will be saved in a `versions` subcollection inside the same document. HotCollection will also insert the moment that document was modified and (if available) that id and email of the Firebase user who made the operation.
 
-HotCollection will no expose that `version` subcollection data. You will to consult it in Firestore interface or access it with the Firebase native API. 
+HotCollection will not expose that `version` subcollection data. You will have to consult the admin Firestore interface or access the subcollection with the native API.
 
-Other diference of safe mode is when `del` method is called in a HotCollection instead of deleting it's corresponding document in Firestore. A set operation  applting a new `deleted` field with the value `true` will be made.
+Another difference of safe mode is when `del` method is called, instead of deleting the document in Firestore. A set operation will apply a `deleted` field with the value `true`.
 
-So now deleted objects will still be available in the HotCollection items propert or as the arguments passed to subcribing callbacks.
-
-Since items is an array you can filter those objects easily with the filter array functions like this:
+So, deleted documents will still be available in the HotCollection . Since the `items` property is an array, you can take advantage of array functions like this:
 
     myHotCollection.items.filter(i => !i.deleted)
 
-Or more exciting you could make the option available to the user to show or hide deleted objects. 
+Or more exciting, you could let the user choose when to show or hide deleted objects. 
+
+That's enough of the good stuff, now we talk about boring things.
 
 # Security Concerns
 
-You should never trust client code. It is very easy to inject clients requests with malicious code to do all kind of nasty stuff with your database. 
+You should never trust the client-side code. It is very easy to inject clients' requests with malicious code to do all kinds of nasty things with your database. 
 
-The default approach to protect your Firestore database is with security rules. There are a lot of documentation on how to make them and adeher to best pratices. Some useful links bellow:
+The default approach to protect your Firestore database is with security rules. There is a lot of documentation on how to use them and adhere to the best practices. Some useful links below:
 
-- Offical docs: [Get started with Cloud Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
+- Official docs: [Get started with Cloud Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - This Fireship guy is awesome: [How to Hack a Firebase App](https://www.youtube.com/watch?v=b7PUm7LmAOw)
 
 # Package Limitations
 
-This package is very simple in its nature and has tons of limitations. But i want to make clear two of them becouse they could be a deal breaker to some of you.
+This package is very simple in its nature and has tons of limitations. But I want to make clear two of them because they could be a deal-breaker to you.
 
 ## Subcollections
 
-HotCollection do not handle subcollections at all. It can't load or manipulate them not as forst level collection or as subdocuments of one higher level HotCollection object.
+HotCollection does not handle subcollections at all. It can't load or manipulate them. Not as first-level collections or as properties inside high-level items.
 
-Some needs that make people use subcollections could be achived with array and map fields. Maybe you want to look more into (those options)[https://firebase.google.com/docs/firestore/manage-data/data-types].
+Some goals that make people use subcollections could be achieved with array and map fields. Maybe you want to look more into [those options](https://firebase.google.com/docs/firestore/manage-data/data-types).
 
 ## Joins
 
-One of the more dificult things to do in client code with Firestore is the equivalent traditional relational join of two tables. HotCollection do not support create objects crossing data between two collections for now. 
+One of the more difficult things to do in client code with Firestore is what would be the equivalent to traditional relational joins of two tables. HotCollection does not support create objects with union data between two collections. At least for now.
 
-You could do that in app code. Most of the solutions i find out are based on server logic built upon Could Functions. The Fireship channel made a (video)[https://fireship.io/lessons/firestore-joins-similar-to-sql/] explaining a solution using Angular framework and RxJS library you can learn upon that.
+You could do that inside your app code. Most of the solutions I found were based on server logic built upon [Could Functions](https://firebase.google.com/docs/functions). The Fireship website made a [video](https://fireship.io/lessons/firestore-joins-similar-to-sql/) explaining a solution based on Angular and RxJS, you can expand upon that.
 
 # Demo
 
-This repo has the package code inside the lib folder and also a demo app in the... demo folder. The web app is built with few packages more proeminent the Vue framework. You can use it to explore more the functionalities and potential of the library.
+This repo has the package code inside the lib folder and also a demo folder with a web app. You can use it to learn or explore the functionalities and potentials of the library.
 
-To run the the demo app you first you have to clone the repo.
+To run the demo you first have to clone the repo.
 
-    git clone https://github.com/joaomelo/vuetify-fireauth.git
+    git clone https://github.com/joaomelo/hot-collection.git
 
-Than create a `demo.env` file inside the demo/config folder with the variables assignments bellow. Replace the values with the real ones for your firebase project and give it a active Firebase active user credential. Don't forget to gitignore this env file so your Firebase that is exposed.
+Then create a `demo.env` file inside the demo/config folder. Fill that file with the variables assignments bellow. Replace the values with the real ones for your firebase project and of an active Firebase user email and password. Don't forget to add the demo.env file to your ".gitignore".
 
     FIREBASE_API_KEY=foobar
     FIREBASE_AUTH_DOMAIN=foobar.firebaseapp.com
@@ -326,7 +328,7 @@ Than create a `demo.env` file inside the demo/config folder with the variables a
     USER=user@user.us
     PASS=password
 
-Then, install the dependencies and run the start script:
+Now install the dependencies and run the start script:
 
     npm install
     npm start
@@ -335,7 +337,7 @@ Have fun 🎉.
 
 # Wrapping up
 
-That was a lot. If you are still here, thank you for the attention. I have a daytime job, a wife and tree beautiful children to take care of. So i give my love to coding at late nights and weekends. I appreciate your interest and feedback.
+That was a lot. If you are still here, thank you for your attention. I have a daytime job, a wife and three wonderful children to take care of. So I give my love to coding at late nights and weekends. I appreciate your interest and feedback.
 
 # License
 
