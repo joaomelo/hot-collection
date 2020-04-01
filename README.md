@@ -1,6 +1,6 @@
 # Hot-Collection
 
-Hot-Collection is a javascript package that abstracts [Firestore](https://firebase.google.com/docs/firestore) collections read and write operations in simple to use data management objects. Those objects automatically load data when it changes and exposes the basic CRUD actions as methods. The package also offers complimentary features like data versioning and adapters.
+Hot-Collection is a javascript library that abstracts and simplifies [Firestore](https://firebase.google.com/docs/firestore) read and write operations in collection management objects. Those objects automatically load data when it changes and exposes the basic CRUD actions as methods. The package also offers complimentary features like data versioning and adapters.
 
 ## Motivation
 
@@ -52,11 +52,11 @@ This is useful for prototyping apps and experimenting with the package.
 
 ## Reading Data
 
-Every Firestore collection update triggers the HotCollection object to sync corresponding data. The following sections explain how to read that data.
+HotCollection offers two approaches to reading data. We can make them grab the latest version in Firestore or subscribe to data updates and keep our app in sync with the database. The following sections explain how to do both.
 
-### Items Property
+### Loading Items
 
-The `items` property is an array with all collection documents stored as javascript objects. Bellow, we show in the browser the name field values inside an employee collection using the items property.
+The HotCollection `loadItems` method returns an array with all the collection documents stored as javascript objects. Complementary we can grab just one item with the `loadItem` method, it takes the document `id` as a parameter and returns an object. The example below, show in the browser the id and name field values inside an employee collection using the `loadItems` result.
   
     import HotCollection from "@joaomelo/hot-collection";
     import { firebaseDb } from "./firebase-init";
@@ -66,18 +66,18 @@ The `items` property is an array with all collection documents stored as javascr
     employeeCol.add({ name: "John" });
     employeeCol.add({ name: "Jane" });
 
-    const html = employeeCol.items.reduce((a, i) => a + `<p>${i.name}</p>`, "");
+    const html = employeeCol.loadItems().reduce((a, i) => a + `<p>${i.name}</p>`, "");
     document.getElementById("app").innerHTML = html;
 
 > You can play with the example [here](https://codesandbox.io/embed/hot-collection-1-8770l?fontsize=14&hidenavigation=1&module=%2Findex.js&theme=dark).
 
-But reading and writing in Firestore is an asynchronous exercise. In the last example, the UI will not update if employee data changes. Also, we have no guarantee that the HotCollection object finished loading Firestore's documents when `reduce` is called.
+But reading and writing in Firestore is an asynchronous exercise. In the last example, the UI will not update if employee data changes. We have a better way to solve that.
 
 ### Subscribing to Data Updates
 
 A more reasonable solution is to subscribe to data updates. HotCollection instances expose the `subscribe` method. You pass a callback function to the subscribe method and that callback will be invoked every data change. 
 
-The callback function receives the array of documents as its first and only argument. Let's rewrite our last example.
+The callback function receives the array of items as its first and only argument. Let's rewrite our last example.
 
     import HotCollection from "@joaomelo/hot-collection";
     import { firebaseDb } from "./firebase-init";
@@ -88,7 +88,7 @@ The callback function receives the array of documents as its first and only argu
     const app = document.getElementById("app");
     const reducer = (a, i) => a + `<p>${i.name}</p>`;
     employeeCol.subscribe(items => {
-      app.innerHTML = employeeCol.items.reduce(reducer, "");
+      app.innerHTML = items.reduce(reducer, "");
     });
 
     employeeCol.add({ name: "John" });
@@ -100,13 +100,13 @@ Cool! But what is really inside that argument the subscription passes to all cal
 
 ### What is an Item?
 
-HotCollection items property and the argument passed to subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
+The items arrays return by `loadItems` method and the parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
-HotCollection will inject inside every item the Firestore document key as an `id` property. So, don't use id as a field in any collection or things will break.
+HotCollection will inject inside every item the Firestore document key as an `id` property. So, don't use `id` as a field name in any collection or things will break.
 
-Also, the HotCollection object will not load any sub-collection subordinated to its documents.
+So as a convention, HotCollection call docs the native data returned and received by Firestore and treat as items its owns data structures with the tweaks (like the inject id mentioned before). 
 
-In the last sections, I will explain an optional and more flexible way the package offers to translate Firestore documents to app objects and vice-versa.
+In the last sections, I will explain an optional and more flexible way the package offers to enhance the conversion between Firestore documents to HotCollection items and vice-versa. But before that let's discuss how to add, edit and delete data. 
 
 ## Manipulating Data
 
