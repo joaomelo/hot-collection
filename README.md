@@ -48,23 +48,23 @@ The HotCollection constructor also accepts a string instead of the Firestore ref
 
 In those cases, all data will be stored in memory and erased even between page reloads. 
 
-This is useful for prototyping apps and experimenting with the package.
+This is useful for prototyping apps and experimenting with the library.
 
 ## Reading Data
 
-HotCollection offers two approaches to reading data. We can make them grab the latest version in Firestore or subscribe to data updates and keep our app in sync with the database. The following sections explain how to do both.
+HotCollection offers two approaches to reading data. We can make them grab the latest version in Firestore or subscribe to data updates and keep app and database im sync. The following sections explain how to do both.
 
 ### Loading Items
 
-The HotCollection `loadItems` and `loadItem` methods will load documents from the Firestore corresponding collection. Since Firestore SDK does that with [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), both methods also returns Promises. 
+The HotCollection `loadItems` and `loadItem` methods will pull the documents from the Firestore corresponding collection. Both methods also returns Promises. 
 
-The `loadItems` method returns a Promise witch resolves in an array with all the appropriate documents converted to javascript objects. 
+The `loadItems` return Promise resolves in an array with all the appropriate Firestore docs converted to javascript objects. 
 
-Complementary, we can grab just one item with the `loadItem` method, it takes the document `id` as a parameter and returns an Promise wich should resolve into an object. 
+Complementary, we can grab just one item with `loadItem`. It takes the document `id` as parameter and returns an Promise witch should resolve into an object. 
 
-The example below is a function that renders a html result with the name field values inside an employee collection using the `loadItems` result.
+The example below is a function that renders a html result. It lists all the names inside an employee collection using  `loadItems`.
   
-    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import HotCollection from '@joaomelo/hot-collection';
     import { db } from '../services';
 
     export async function renderLoadExample (el) {
@@ -90,11 +90,11 @@ A more reasonable solution is to subscribe to data updates. HotCollection instan
 
 The callback function receives the array of items as its first and only argument. Let's rewrite our last example.
 
-    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import HotCollection from '@joaomelo/hot-collection';
     import { db } from '../services';
     import { renderEmployees } from './common';
 
-    export async function renderSubExample (el) {
+    export function renderSubExample (el) {
       const employeeCol = new HotCollection(db, 'employees');
       employeeCol.subscribe(items => { el.innerHTML = renderEmployees(items); });
     }
@@ -103,13 +103,11 @@ Cool! But what is really inside that argument the subscription passes to all cal
 
 ### What is an Item?
 
-The items arrays promised by `loadItems` method and the parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
+The items arrays promised by `loadItems` method and the items parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
-HotCollection will inject inside every item the Firestore document key as an `id` property. So, don't use `id` as a field name in any collection or things will break.
+HotCollection will inject inside every item the Firestore document key as the value of an `id` property. So, don't use `id` as a field name in any collection or things will break.
 
-So as a convention, HotCollection call docs the native data returned by Firestore and treat as items its owns spiced data structures (like the injected id mentioned before). 
-
-In the last sections, I will explain an optional and more flexible way the package offers to enhance the conversion between Firestore docs to HotCollection items and vice-versa. But before that, let's discuss how to add, edit and delete data. 
+Also in the last sections, I will explain an optional and flexible way for you to customize the conversion between Firestore docs to HotCollection items and vice-versa. But before that, let's discuss how to add, edit and delete data. 
 
 ## Manipulating Data
 
@@ -119,62 +117,66 @@ HotCollection provides three methods to manipulate Firestore documents: `add`, `
 
 To add a document just pass an object to the HotCollection `add` method. An automatic id will be provided by Firestore. Bellow, we make a tiny app to add employees to a Firestore collection.
 
-    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import HotCollection from '@joaomelo/hot-collection';
     import { db } from '../services';
     import { getById, resetAllInputs } from '../helpers';
     import { renderEmployees } from './common';
 
-    export async function renderAddExample (el) {
+    export function renderAddExample (el) {
       getById('add-save').addEventListener('click', () => {
         employeeCol.add({ name: getById('add-name').value });
         resetAllInputs();
       });
 
       const employeeCol = new HotCollection(db, 'employees');
-      employeeCol.subscribe(items => { getById('add-list').innerHTML = renderEmployees(items); });
+      employeeCol.subscribe(items => { 
+        getById('add-example').innerHTML = renderEmployees(items); 
+      });
     };
 
 If you want to edit a document or add one with an arbitrary id, use the `set` method. It also expects an object parameter but you have to make sure this object has an `id` property. 
 
 If a document with that id already exists in the Firestore collection all it's data will be replaced by what is inside the object you provided. If no document is found, a new one will be inserted and associated with the id. Let's update the last example with the editing capability.
 
-    import HotCollection from "@joaomelo/hot-collection";
-    import { fireDb, renderEmployee, getById, getAll, resetInputs } from "./helpers";
+    import HotCollection from '@joaomelo/hot-collection';
+    import { db } from '../services';
+    import { getById, getAll, resetAllInputs } from '../helpers';
+    import { renderEditableEmployee } from './common';
 
-    const db = fireDb || "mock";
-    const employeeCol = new HotCollection(db, "employees");
+    const employeeCol = new HotCollection(db, 'employees');
 
-    employeeCol.subscribe(items => {
-      getById("list").innerHTML = items.reduce((a, e) => a + renderEmployee(e), "");
-      getAll(".edit-btn").forEach(btn => {
-        btn.onclick = loadEmployee;
+    export function renderSetExample (el) {
+      getById('set-save').onclick = addOrSetEmployee;
+
+      employeeCol.subscribe(items => {
+        el.innerHTML = `
+          <ul>
+            ${items.reduce((a, e) => a + renderEditableEmployee(e, 'set'), '')}
+          </ul>
+        `;
+        getAll('.set-btn').forEach(btn => { btn.onclick = loadEmployee; });
       });
-    });
+    };
 
-    getById("save").addEventListener("click", () => {
-      const employee = {
-        name: getById("name").value,
-        dpto: getById("dpto").value
-      };
+    function addOrSetEmployee () {
+      const employee = { name: getById('set-name').value };
 
-      if (getById("id").value) {
-        employee.id = getById("id").value;
+      if (getById('set-id').value) {
+        employee.id = getById('set-id').value;
         employeeCol.set(employee);
       } else {
         employeeCol.add(employee);
       }
 
-      resetInputs();
-    });
-
-    function loadEmployee() {
-      const e = employeeCol.getItem(this.id);
-      getById("id").value = e.id;
-      getById("name").value = e.name;
-      getById("dpto").value = e.dpto;
+      resetAllInputs();
     }
 
-> You can play with the example above [here](https://codesandbox.io/embed/hot-collection-set-tvn5t?fontsize=14&hidenavigation=1&theme=dark).
+    function loadEmployee () {
+      employeeCol.loadItem(this.id).then(e => {
+        getById('set-id').value = e.id;
+        getById('set-name').value = e.name;
+      });
+    }
 
 ### Deleting
 
