@@ -1,9 +1,9 @@
 import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { db } from '../services';
 
-export async function renderLoadExample (el) {
+export async function renderGetExample (el) {
   const employeeCol = new HotCollection(db, 'employees');
-  const employees = await employeeCol.loadItems();
+  const employees = await employeeCol.getItems();
 
   if (employees.length === 0) {
     employeeCol.add({ name: 'John' });

@@ -32,7 +32,7 @@ function addOrSetEmployee () {
 }
 
 function loadEmployee () {
-  employeeCol.loadItem(this.id).then(e => {
+  employeeCol.getItem(this.id).then(e => {
     getById('set-id').value = e.id;
     getById('set-name').value = e.name;
   });

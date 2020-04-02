@@ -54,22 +54,24 @@ This is useful for prototyping apps and experimenting with the library.
 
 HotCollection offers two approaches to reading data. We can make them grab the latest version in Firestore or subscribe to data updates and keep app and database im sync. The following sections explain how to do both.
 
-### Loading Items
+### Getting Items
 
-The HotCollection `loadItems` and `loadItem` methods will pull the documents from the Firestore corresponding collection. Both methods also returns Promises. 
+The HotCollection `getItems` and `getItem` methods will pull the data items from the HotCollection cache. They are both asynchronous methods, so return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). 
 
-The `loadItems` return Promise resolves in an array with all the appropriate Firestore docs converted to javascript objects. 
+If they called during a sync operation between HotCollection and Firestore, the HotCollection object will wait until completion and then resolve with the most up to date items. 
 
-Complementary, we can grab just one item with `loadItem`. It takes the document `id` as parameter and returns an Promise witch should resolve into an object. 
+The `getItems` method will resolve into an array with all the appropriate Firestore docs converted to javascript objects. 
 
-The example below is a function that renders a html result. It lists all the names inside an employee collection using  `loadItems`.
+Complementary, we can grab just one item with `getItem`. It takes the document `id` as parameter and resolves into an item object. 
+
+The example below is a function that renders a html result. It lists all the names inside an employee collection using  `getItems`.
   
     import HotCollection from '@joaomelo/hot-collection';
     import { db } from '../services';
 
     export async function renderLoadExample (el) {
       const employeeCol = new HotCollection(db, 'employees');
-      const employees = await employeeCol.loadItems();
+      const employees = await employeeCol.getItems();
 
       if (employees.length === 0) {
         employeeCol.add({ name: 'John' });
@@ -82,7 +84,7 @@ The example below is a function that renders a html result. It lists all the nam
       `;
     }
 
-But reading and writing in Firestore is an asynchronous exercise. In the last example, the UI will not update if employee data changes. We have a better way to solve that.
+But bring data from Firestore to your app is in most cases an stream management exercise. In the last example, the UI will not update if employee data changes. We have a better way to solve that.
 
 ### Subscribing to Data Updates
 
@@ -103,7 +105,7 @@ Cool! But what is really inside that argument the subscription passes to all cal
 
 ### What is an Item?
 
-The items arrays promised by `loadItems` method and the items parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
+The items arrays promised by `getItems` method and the items parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
 HotCollection will inject inside every item the Firestore document key as the value of an `id` property. So, don't use `id` as a field name in any collection or things will break.
 
@@ -172,7 +174,7 @@ If a document with that id already exists in the Firestore collection all it's d
     }
 
     function loadEmployee () {
-      employeeCol.loadItem(this.id).then(e => {
+      employeeCol.getItem(this.id).then(e => {
         getById('set-id').value = e.id;
         getById('set-name').value = e.name;
       });
