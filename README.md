@@ -56,20 +56,31 @@ HotCollection offers two approaches to reading data. We can make them grab the l
 
 ### Loading Items
 
-The HotCollection `loadItems` method returns an array with all the collection documents stored as javascript objects. Complementary we can grab just one item with the `loadItem` method, it takes the document `id` as a parameter and returns an object. The example below, show in the browser the id and name field values inside an employee collection using the `loadItems` result.
+The HotCollection `loadItems` and `loadItem` methods will load documents from the Firestore corresponding collection. Since Firestore SDK does that with [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), both methods also returns Promises. 
+
+The `loadItems` method returns a Promise witch resolves in an array with all the appropriate documents converted to javascript objects. 
+
+Complementary, we can grab just one item with the `loadItem` method, it takes the document `id` as a parameter and returns an Promise wich should resolve into an object. 
+
+The example below is a function that renders a html result with the name field values inside an employee collection using the `loadItems` result.
   
-    import HotCollection from "@joaomelo/hot-collection";
-    import { firebaseDb } from "./firebase-init";
+    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import { db } from '../services';
 
-    const db = firebaseDb || "mock";
-    const employeeCol = new HotCollection(db, "items");
-    employeeCol.add({ name: "John" });
-    employeeCol.add({ name: "Jane" });
+    export async function renderLoadExample (el) {
+      const employeeCol = new HotCollection(db, 'employees');
+      const employees = await employeeCol.loadItems();
 
-    const html = employeeCol.loadItems().reduce((a, i) => a + `<p>${i.name}</p>`, "");
-    document.getElementById("app").innerHTML = html;
+      if (employees.length === 0) {
+        employeeCol.add({ name: 'John' });
+      }
 
-> You can play with the example [here](https://codesandbox.io/embed/hot-collection-1-8770l?fontsize=14&hidenavigation=1&module=%2Findex.js&theme=dark).
+      el.innerHTML = `
+        <ul> 
+            ${employees.reduce((a, e) => (a += `<li>${e.name}</li>`), '')}
+        </ul>
+      `;
+    }
 
 But reading and writing in Firestore is an asynchronous exercise. In the last example, the UI will not update if employee data changes. We have a better way to solve that.
 
@@ -79,34 +90,26 @@ A more reasonable solution is to subscribe to data updates. HotCollection instan
 
 The callback function receives the array of items as its first and only argument. Let's rewrite our last example.
 
-    import HotCollection from "@joaomelo/hot-collection";
-    import { firebaseDb } from "./firebase-init";
+    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import { db } from '../services';
+    import { renderEmployees } from './common';
 
-    const db = firebaseDb || "mock";
-    const employeeCol = new HotCollection(db, "items");
-
-    const app = document.getElementById("app");
-    const reducer = (a, i) => a + `<p>${i.name}</p>`;
-    employeeCol.subscribe(items => {
-      app.innerHTML = items.reduce(reducer, "");
-    });
-
-    employeeCol.add({ name: "John" });
-    employeeCol.add({ name: "Jane" });
-
-> You can play with the example [here](https://codesandbox.io/embed/hot-collection-sub-5lux1?fontsize=14&hidenavigation=1&theme=dark).
+    export async function renderSubExample (el) {
+      const employeeCol = new HotCollection(db, 'employees');
+      employeeCol.subscribe(items => { el.innerHTML = renderEmployees(items); });
+    }
 
 Cool! But what is really inside that argument the subscription passes to all callbacks when the change event is published?
 
 ### What is an Item?
 
-The items arrays return by `loadItems` method and the parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
+The items arrays promised by `loadItems` method and the parameter of all subscription callbacks are pretty much the copies of the original documents inside the Firestore collection with few differences.
 
 HotCollection will inject inside every item the Firestore document key as an `id` property. So, don't use `id` as a field name in any collection or things will break.
 
-So as a convention, HotCollection call docs the native data returned and received by Firestore and treat as items its owns data structures with the tweaks (like the inject id mentioned before). 
+So as a convention, HotCollection call docs the native data returned by Firestore and treat as items its owns spiced data structures (like the injected id mentioned before). 
 
-In the last sections, I will explain an optional and more flexible way the package offers to enhance the conversion between Firestore documents to HotCollection items and vice-versa. But before that let's discuss how to add, edit and delete data. 
+In the last sections, I will explain an optional and more flexible way the package offers to enhance the conversion between Firestore docs to HotCollection items and vice-versa. But before that, let's discuss how to add, edit and delete data. 
 
 ## Manipulating Data
 
@@ -116,28 +119,20 @@ HotCollection provides three methods to manipulate Firestore documents: `add`, `
 
 To add a document just pass an object to the HotCollection `add` method. An automatic id will be provided by Firestore. Bellow, we make a tiny app to add employees to a Firestore collection.
 
-    import HotCollection from "@joaomelo/hot-collection";
-    import { firebaseDb, renderEmployee } from "./helpers";
+    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
+    import { db } from '../services';
+    import { getById, resetAllInputs } from '../helpers';
+    import { renderEmployees } from './common';
 
-    const get = id => document.getElementById(id);
-
-    const db = firebaseDb || "mock";
-    const employeeCol = new HotCollection(db, "employees");
-
-    employeeCol.subscribe(items => {
-      get("list").innerHTML = items.reduce((a, e) => a + renderEmployee(e), "");
-    });
-
-    get("save").addEventListener("click", () => {
-      employeeCol.add({
-        name: get("name").value,
-        dpto: get("dpto").value
+    export async function renderAddExample (el) {
+      getById('add-save').addEventListener('click', () => {
+        employeeCol.add({ name: getById('add-name').value });
+        resetAllInputs();
       });
-      get("name").value = "";
-      get("dpto").value = "";
-    });
 
-> You can play with the example above [here](https://codesandbox.io/embed/hot-collection-manipulate-lcj2e?fontsize=14&hidenavigation=1&theme=dark).
+      const employeeCol = new HotCollection(db, 'employees');
+      employeeCol.subscribe(items => { getById('add-list').innerHTML = renderEmployees(items); });
+    };
 
 If you want to edit a document or add one with an arbitrary id, use the `set` method. It also expects an object parameter but you have to make sure this object has an `id` property. 
 

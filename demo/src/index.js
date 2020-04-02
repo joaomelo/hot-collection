@@ -1,16 +1,16 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
-import App from './app.vue';
+// enable the use of async functions
+import 'core-js';
+import 'regenerator-runtime/runtime';
 
-import { router } from './router';
+import { userPromise } from './services';
+import { getById } from './helpers';
+import { renderLoadExample } from './examples/load';
+import { renderSubExample } from './examples/sub';
+import { renderAddExample } from './examples/add';
 
-Vue.config.productionTip = false;
-Vue.use(Vuetify);
-
-const vueApp = new Vue({
-  vuetify: new Vuetify(),
-  router,
-  render: h => h(App)
+userPromise.then(() => {
+  getById('title').innerHTML = 'HotCollection';
+  renderLoadExample(getById('load-example'));
+  renderSubExample(getById('sub-example'));
+  renderAddExample(getById('add-example'));
 });
-
-vueApp.$mount('#app');

@@ -1,4 +1,7 @@
 module.exports = {
+  globals: {
+    fetch: false
+  },
   parserOptions: {
     parser: 'babel-eslint'
   },
@@ -7,8 +10,6 @@ module.exports = {
     'no-debugger': 'off'
   },
   extends: [
-    'standard',
-    'plugin:vue/recommended',
+    'standard'
   ],
-  plugins: ['vue']
 };

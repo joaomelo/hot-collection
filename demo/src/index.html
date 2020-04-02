@@ -2,17 +2,31 @@
 <html>
 
 <head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-  <title>demo for library</title>
+  <title>Hot-Collection Demo</title>
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <h1 id="title">Loading...</h1>
+
+    <h2>Load Example | Employees List</h2>
+    <div id="load-example"></div>
+
+    <h2>Subscription Example | Employees List</h2>
+    <small>Edit code in Firestore console and watch updates</small>
+    <div id="sub-example"></div>
+
+    <h2>Add Example | Employees Form</h2>
+    <form>
+      <input type="text" id="add-name" placeholder="Name" />
+      <button id="add-save" type="button">Save</button>
+      <div id="add-list"></div>
+    </form>
+    <div id="add-example"></div>
+
+  </div>
 </body>
 
 </html>
