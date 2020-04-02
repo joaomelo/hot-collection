@@ -1,6 +1,6 @@
 {
   "name": "@joaomelo/hot-collection",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Hot-Collection is a javascript library that abstracts and simplifies Firestore read and write operations in collection management objects. Those objects automatically load data when it changes and exposes the basic CRUD actions as methods. The package also offers complimentary features like data versioning and adapters.",
   "main": "lib/dist/index.js",
   "scripts": {
