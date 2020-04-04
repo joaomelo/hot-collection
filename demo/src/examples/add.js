@@ -4,11 +4,15 @@ import { getById, resetAllInputs } from '../helpers';
 import { renderEmployees } from './common';
 
 export function renderAddExample (el) {
+  const employeeCol = new HotCollection(db, 'employees');
+
   getById('add-save').addEventListener('click', () => {
-    employeeCol.add({ name: getById('add-name').value });
+    employeeCol.add({
+      name: getById('add-name').value,
+      dpto: getById('add-dpto').value
+    });
     resetAllInputs();
   });
 
-  const employeeCol = new HotCollection(db, 'employees');
-  employeeCol.subscribe(items => { getById('add-example').innerHTML = renderEmployees(items); });
+  employeeCol.subscribe(items => { el.innerHTML = renderEmployees(items, 'add'); });
 };

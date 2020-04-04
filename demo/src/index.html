@@ -11,28 +11,59 @@
   <div id="app">
     <h1 id="title">Loading...</h1>
 
-    <h2>Get Example | Employees List</h2>
+    <h2>Example 1: Get Employees</h2>
     <div id="get-example">Loading...</div>
 
-    <h2>Subscription Example | Employees List</h2>
-    <small>Edit code in Firestore console and watch updates</small>
+    <h2>Example 2: Employees Subscription</h2>
+    <small>Edit collection in Firestore console and see the list updates</small>
     <div id="sub-example">Loading...</div>
 
-    <h2>Add Example | Employees Form</h2>
+    <h2>Example 3: Add Employee</h2>
     <form>
       <input type="text" id="add-name" placeholder="Name" />
-      <button id="add-save" type="button">Save</button>
+      <select name="add-dpto" id="add-dpto">
+        <option value="IT">IT</option>
+        <option value="HR">HR</option>
+        <option value="Finance">Finance</option>
+      </select>
+      <button id="add-save" type="button">Add</button>
       <div id="add-example">Loading...</div>
     </form>
 
-    <h2>Set Example | Employees Form</h2>
+    <h2>Example 4: Del Employee</h2>
+    <div id="del-example">Loading...</div>
+
+    <h2>Example 5: Set Employees</h2>
     <form>
-      <input type="text" id="set-id" placeholder="Id" readonly/>
+      <input type="text" id="set-id" placeholder="Id" readonly />
       <input type="text" id="set-name" placeholder="Name" />
+      <select name="set-dpto" id="set-dpto">
+        <option value="IT">IT</option>
+        <option value="HR">HR</option>
+        <option value="Finance">Finance</option>
+      </select>
       <button id="set-save" type="button">Save</button>
       <div id="set-example">Loading...</div>
     </form>
 
+    <h2>Example 6: Filter on the Backend</h2>
+    <form>
+      <select name="fil-dpto" id="fil-dpto">
+        <option value="IT">IT</option>
+        <option value="HR">HR</option>
+        <option value="Finance">Finance</option>
+      </select>
+      <button id="fil-filter" class="fil-btn" type="button">Filter</button>
+      <button id="fil-clear" class="fil-btn" type="button">Clear</button>
+    </form>
+    <div id="fil-example">Waiting...</div>
+
+    <h2>Example 7: Filter on the Client</h2>
+    <form>
+      <input type="text" id="cli-name" placeholder="Name" />
+      <button id="cli-filter" type="button">Filter</button>
+    </form>
+    <div id="cli-example"></div>
   </div>
 </body>
 

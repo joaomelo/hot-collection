@@ -1,18 +1,26 @@
-function renderEmployees (items) {
+function renderEmployees (employees, example) {
   return `
     <ul> 
-        ${items.reduce((a, i) => (a += `<li>${i.name}</li>`), '')}
+        ${employees.reduce((a, e) => a + renderEmployee(e, example), '')}
     </ul>
   `;
 }
 
-function renderEditableEmployee (e, tag) {
-  return `
-    <li/>
-      <span><b>Id: ${e.id}</b> - Name: ${e.name}</span>
-      <button id="${e.id}" class="${tag}-btn" type="button">Edit</button>
-    </li>
-  `;
-};
+function renderEmployee (employee, example = 'read') {
+  const justName = employee.name;
+  const namePlusDpto = `<b>${justName}</b> - ${employee.dpto}`;
+  const plusDelBtn = `${namePlusDpto} <button data-id="${employee.id}" class="${example}-delbtn" type="button">Del</button>`;
+  const plusEditBtn = `${namePlusDpto} <button data-id="${employee.id}" class="${example}-editbtn" type="button">Edit</button>`;
 
-export { renderEmployees, renderEditableEmployee };
+  const examples = {
+    read: justName,
+    add: namePlusDpto,
+    del: plusDelBtn,
+    set: plusEditBtn
+  };
+
+  const liHtml = `<li>${examples[example]}</li>`;
+  return liHtml;
+}
+
+export { renderEmployees };
