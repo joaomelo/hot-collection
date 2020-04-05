@@ -12,7 +12,6 @@ const lib = path.resolve(__dirname, '../../lib/src');
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'source-map',
   entry: ['./demo/src/index.js'],
   output: {
     publicPath: '/',

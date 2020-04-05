@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
+  devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.json']
   },

@@ -4,7 +4,8 @@ import 'regenerator-runtime/runtime';
 
 import { userPromise } from './services';
 import { getById } from './helpers';
-import { renderGetExample } from './examples/get';
+import { renderGetItemsExample } from './examples/get-items';
+import { renderGetItemExample } from './examples/get-item';
 import { renderSubExample } from './examples/sub';
 import { renderAddExample } from './examples/add';
 import { renderDelExample } from './examples/del';
@@ -14,7 +15,8 @@ import { renderFilterClientExample } from './examples/filter-client';
 
 userPromise.then(() => {
   getById('title').innerHTML = 'Hot-Collection';
-  renderGetExample(getById('get-example'));
+  renderGetItemsExample(getById('get-items-example'));
+  renderGetItemExample(getById('get-item-example'));
   renderSubExample(getById('sub-example'));
   renderAddExample(getById('add-example'));
   renderDelExample(getById('del-example'));
