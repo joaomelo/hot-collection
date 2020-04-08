@@ -10,7 +10,7 @@ import { renderSubExample } from './examples/sub';
 import { renderAddExample } from './examples/add';
 import { renderDelExample } from './examples/del';
 import { renderSetExample } from './examples/set';
-import { renderFilExample } from './examples/fil';
+import { renderFilterBackendExample } from './examples/filter-backend';
 import { renderFilterClientExample } from './examples/filter-client';
 
 userPromise.then(() => {
@@ -21,6 +21,6 @@ userPromise.then(() => {
   renderAddExample(getById('add-example'));
   renderDelExample(getById('del-example'));
   renderSetExample(getById('set-example'));
-  renderFilExample(getById('fil-example'));
+  renderFilterBackendExample(getById('fil-example'));
   renderFilterClientExample(getById('cli-example'));
 });

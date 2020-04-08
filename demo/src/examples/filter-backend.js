@@ -3,7 +3,7 @@ import { db } from '../services';
 import { getById, getAll } from '../helpers';
 import { renderEmployees } from './common';
 
-export function renderFilExample (el) {
+export function renderFilterBackendExample (el) {
   let employeeCol;
 
   getAll('.fil-btn').forEach(btn => btn.addEventListener('click', e => {
