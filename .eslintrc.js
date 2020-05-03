@@ -1,6 +1,7 @@
 module.exports = {
   globals: {
-    fetch: false
+    fetch: false,
+    Event: false
   },
   parserOptions: {
     parser: 'babel-eslint'

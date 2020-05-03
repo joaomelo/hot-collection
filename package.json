@@ -1,7 +1,7 @@
 {
   "name": "@joaomelo/hot-collection",
   "version": "0.8.7",
-  "description": "Hot-Collection is a javascript library that simplifies Firestore read and write operations by abstracting database collections in powerful but simple to use objects. Those objects automatically load data when it changes in the backend, exposes the basic CRUD actions as methods and offers complimentary features like data versioning and adapters.",
+  "description": "Hot-Collection is a javascript library that abstracts database's collections of documents in simple to use objects. Those collection objects automatically load data when it changes in the database, exposes CRUD actions as methods and offers complimentary features like data versioning and transformations. Hot-Collection supports In-Memory, Local Storage, Firestore and Airtable connections.",
   "main": "lib/dist/index.js",
   "scripts": {
     "start": "webpack-dev-server --config demo/config/webpack.demo.js",
@@ -22,10 +22,12 @@
     "url": "git+https://github.com/joaomelo/hot-collection.git"
   },
   "keywords": [
+    "crud",
+    "database",
+    "storage",
     "firestore",
     "firebase",
-    "database",
-    "crud",
+    "local-storage",
     "serveless"
   ],
   "author": "joaomelo",
@@ -37,14 +39,13 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "circular-dependency-plugin": "^5.2.0",
     "compression-webpack-plugin": "^3.1.0",
+    "core-js": "^3.6.4",
     "css-loader": "^3.4.2",
-    "deepmerge": "^4.2.2",
     "dotenv-webpack": "^1.7.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.1",
@@ -54,18 +55,18 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "firebase": "^7.13.0",
+    "airtable": "^0.8.1",
     "html-webpack-plugin": "^3.2.0",
+    "regenerator-runtime": "^0.13.5",
     "rimraf": "^3.0.2",
-    "sass": "^1.26.3",
     "style-loader": "^1.1.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
-    "webpack-merge": "^4.2.2",
-    "core-js": "^3.6.4",
-    "regenerator-runtime": "^0.13.5"
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@joaomelo/bus": "^1.1.4"
+    "rxjs": "^6.5.5",
+    "uuid": "^8.0.0"
   }
 }

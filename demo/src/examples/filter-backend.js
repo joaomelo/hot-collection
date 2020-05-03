@@ -1,6 +1,6 @@
 import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { db } from '../services';
-import { getById, getAll } from '../helpers';
+import { byId, getAll } from '../helpers';
 import { renderEmployees } from './common';
 
 export function renderFilterBackendExample (el) {
@@ -13,7 +13,7 @@ export function renderFilterBackendExample (el) {
         {
           field: 'dpto',
           operator: '==',
-          value: getById('fil-dpto').value
+          value: byId('fil-dpto').value
         }
       ];
     }

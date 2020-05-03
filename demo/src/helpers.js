@@ -1,14 +1,18 @@
-function getById (id) {
+function byId (id) {
   return document.getElementById(id);
+}
+
+function byName (name) {
+  return document.getElementsByName(name);
 }
 
 function getAll (selector) {
   return document.querySelectorAll(selector);
 }
 
-function resetAllInputs () {
-  const inputs = getAll('input');
+function resetAllTextInputs () {
+  const inputs = getAll('input[type=text]');
   inputs.forEach(i => { i.value = ''; });
 }
 
-export { getById, getAll, resetAllInputs };
+export { byId, byName, getAll, resetAllTextInputs };

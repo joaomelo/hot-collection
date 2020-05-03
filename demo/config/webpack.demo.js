@@ -20,7 +20,7 @@ module.exports = merge(common, {
   },
   resolve: {
     alias: {
-      __src: src,
+      __demo: src,
       __lib: lib
     }
   },
