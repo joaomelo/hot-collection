@@ -6,13 +6,14 @@ function byName (name) {
   return document.getElementsByName(name);
 }
 
-function getAll (selector) {
-  return document.querySelectorAll(selector);
+function query (selector) {
+  const els = document.querySelectorAll(selector);
+  return els;
 }
 
 function resetAllTextInputs () {
-  const inputs = getAll('input[type=text]');
+  const inputs = query('input[type=text]');
   inputs.forEach(i => { i.value = ''; });
 }
 
-export { byId, byName, getAll, resetAllTextInputs };
+export { byId, byName, query, resetAllTextInputs };

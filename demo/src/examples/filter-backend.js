@@ -1,12 +1,12 @@
 import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { db } from '../services';
-import { byId, getAll } from '../helpers';
+import { byId, query } from '../helpers';
 import { renderEmployees } from './common';
 
 export function renderFilterBackendExample (el) {
   let employeeCol;
 
-  getAll('.fil-btn').forEach(btn => btn.addEventListener('click', e => {
+  query('.fil-btn').forEach(btn => btn.addEventListener('click', e => {
     const options = {};
     if (e.target.id === 'fil-filter') {
       options.where = [

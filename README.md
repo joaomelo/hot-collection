@@ -117,15 +117,17 @@ Fortunately, Firestore has a security rules feature that allows you to guard the
 
 HotCollection offers a `subscribe` method to read data and listen to data updates. You pass a observer function to the subscribe method and that function will be invoked immediately passing the latest data snapshot and at every data update signal coming from the database. 
 
-The observer function receives an array of items as its first and only argument. Bellow we have an example listing employees:
+The observer function receives an array of items as its first and only argument. Bellow we have an example for listing employees:
 
     import HotCollection from '@joaomelo/hot-collection';
-    import { db } from '../services';
-    import { renderEmployees } from './common';
 
-    export function renderSubExample (el) {
-      const employeeCol = new HotCollection(db, 'employees');
-      employeeCol.subscribe(items => { el.innerHTML = renderEmployees(items); });
+    function renderListItems (el, adapter) {
+      const employeeCollection = new HotCollection('employees', { adapter });
+      employeeCollection.subscribe(employees => {
+        el.innerHTML = employees.length <= 0
+          ? '<p>no employees found</p>'
+          : `<ul>${employees.reduce((a, e) => a + `<li>${e.id}: ${e.name}</li>`, '')}</ul>`;
+      });
     }
 
 Cool! But what is really inside that argument the subscription passes to all observers?
@@ -142,71 +144,68 @@ You can also configure how HotCollection convert between the database docs to Ho
 
 HotCollection provides three methods to manipulate database documents: `add`, `set` and `del`.
 
-### Adding and Editing
+### Adding
 
-To add a document just pass an object to the HotCollection `add` method. An automatic id will be provided by Firestore. Bellow, we make a tiny app to add employees to a Firestore collection.
+To add a document just pass an item to the HotCollection `add` method. An automatic id will be provided  according to the database technology. Bellow, we write a function to add employees to a collection.
 
-    import HotCollection from '__lib'; // '@joaomelo/hot-collection';
-    import { db } from '../services';
+    import HotCollection from '@joaomelo/hot-collection';
     import { byId, resetAllTextInputs } from '../helpers';
-    import { renderEmployees } from './common';
 
-    export function renderAddExample (el) {
-      const employeeCol = new HotCollection(db, 'employees');
+    function renderAddItems (el, adapter) {
+      const employeeCollection = new HotCollection('employees', { adapter });
 
-      byId('add-save').addEventListener('click', () => {
-        employeeCol.add({
-          name: byId('add-name').value,
-          dpto: byId('add-dpto').value
+      byId('btn-add-item').addEventListener('click', () => {
+        employeeCollection.add({
+          name: byId('ipt-add-item-name').value,
+          dpto: byId('sel-add-item-dpto').value
         });
         resetAllTextInputs();
       });
 
-      employeeCol.subscribe(items => { el.innerHTML = renderEmployees(items, 'add'); });
-    };
-
-If you want to edit a document or add one with an arbitrary id, use the `set` method. It also expects an object parameter but you have to make sure this object has an `id` property. 
-
-If a document with that id already exists in the Firestore collection all it's data will be replaced by what is inside the object you provided. If no document is found, a new one will be inserted and associated with the id. Let's update the last example with the editing capability.
-
-    import HotCollection from '@joaomelo/hot-collection';
-    import { db } from '../services';
-    import { byId, getAll, resetAllTextInputs } from '../helpers';
-    import { renderEmployees } from './common';
-
-    const employeeCol = new HotCollection(db, 'employees');
-
-    export function renderSetExample (el) {
-      byId('set-save').onclick = addOrSetEmployee;
-
-      employeeCol.subscribe(items => {
-        el.innerHTML = renderEmployees(items, 'set');
-        getAll('.set-editbtn').forEach(btn => { btn.onclick = loadEmployee; });
+      employeeCollection.subscribe(employees => {
+        el.innerHTML = employees.length <= 0
+          ? '<p>no employees found</p>'
+          : `<ul>${employees.reduce((a, e) => a + `<li>${e.name}: ${e.dpto}</li>`, '')}</ul>`;
       });
     };
 
-    function addOrSetEmployee () {
-      const employee = {
-        name: byId('set-name').value,
-        dpto: byId('set-dpto').value
-      };
+### Updating
 
-      if (byId('set-id').value) {
-        employee.id = byId('set-id').value;
-        employeeCol.set(employee);
-      } else {
-        employeeCol.add(employee);
-      }
+We have two methods to update documents: `set` and `update`. Both receive an item as parameter. The item object must have an `id` property.
 
+If a document with that `id` already exists in the database collection all it's data will be replaced by what is inside the item parameter. If no document is found, a new one will be inserted associated with the id. Let's update the last example with the editing capability.
+
+    function renderSetItem (el, adapter) {
+      const employeeCollection = new HotCollection('employees', { adapter });
+      byId('btn-set-item-set').onclick = () => editEmployee(employeeCollection, 'set');
+      byId('btn-set-item-update').onclick = () => editEmployee(employeeCollection, 'update');
+
+      employeeCollection.subscribe(employees => {
+        el.innerHTML = employees.length <= 0
+          ? '<p>no employees found</p>'
+          : `<ul>${employees.reduce((a, e) => a + `${renderListItem(e)}`, '')}</ul>`;
+        query('.btn-set-item-edit').forEach(btn => { btn.onclick = loadItem; });
+      });
+    };
+
+    function renderListItem (e) {
+      const btn = `<button data-id="${e.id}" data-name="${e.name}" class="btn-set-item-edit" type="button">Edit</button>`;
+      return `<li>${e.name}:${e.dpto || 'no dpto'}${btn}</li>`;
+    };
+
+    function editEmployee (collection, method) {
+      const id = byId('ipt-set-item-id').value;
+      const name = byId('ipt-set-item-name').value;
+
+      if (!(id || name)) return;
+
+      collection[method]({ id, name });
       resetAllTextInputs();
     }
 
-    function loadEmployee () {
-      employeeCol.getItem(this.dataset.id).then(e => {
-        byId('set-id').value = e.id;
-        byId('set-name').value = e.name;
-        byId('set-dpto').value = e.dpto;
-      });
+    function loadItem () {
+      byId('ipt-set-item-id').value = this.dataset.id;
+      byId('ipt-set-item-name').value = this.dataset.name;
     }
 
 ### Deleting
@@ -215,7 +214,7 @@ To delete a document just call the `del` method in any HotCollection object. The
 
     import HotCollection from '__lib'; // '@joaomelo/hot-collection';
     import { db } from '../services';
-    import { getAll } from '../helpers';
+    import { query } from '../helpers';
     import { renderEmployees } from './common';
 
     const employeeCol = new HotCollection(db, 'employees');
@@ -223,7 +222,7 @@ To delete a document just call the `del` method in any HotCollection object. The
     export function renderDelExample (el) {
       employeeCol.subscribe(items => {
         el.innerHTML = renderEmployees(items, 'del');
-        getAll('.del-delbtn').forEach(btn => { btn.onclick = delEmployee; });
+        query('.del-delbtn').forEach(btn => { btn.onclick = delEmployee; });
       });
     };
 

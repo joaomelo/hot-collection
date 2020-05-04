@@ -35,7 +35,7 @@ function renderAddItems (el, adapter) {
   employeeCollection.subscribe(employees => {
     el.innerHTML = employees.length <= 0
       ? '<p>no employees found</p>'
-      : `<ul>${employees.reduce((a, e) => a + `<li>${e.name}: ${e.dpto}</li>`, '')}</ul>`;
+      : `<ul>${employees.reduce((a, e) => a + `<li>${e.name}: ${e.dpto || 'no dpto'}</li>`, '')}</ul>`;
   });
 };
 
