@@ -66,6 +66,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "lodash.merge": "^4.6.2",
     "rxjs": "^6.5.5",
     "uuid": "^8.0.0"

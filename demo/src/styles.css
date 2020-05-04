@@ -2,11 +2,11 @@
   margin-top: 10px;
 }
 
-#btnUpdateAdapter {
+#btnUpdateAdapter, .btn-del-item-del, .btn-set-item-edit {
   margin-left: 10px;
 }
 
-.example-title {
+.example-title, li {
   margin-bottom: 5px;
 }
 
