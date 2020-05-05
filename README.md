@@ -255,7 +255,7 @@ Until now we only used the adapter property of the options object. But you can d
         fromItemToDoc: someFunction,
         fromDocToItem: otherFunction
       },
-      query: [ ... ],
+      query: { ... },
     }
 
 Let's talk about those options.
@@ -280,23 +280,31 @@ Converter is option object with two functions applied to every item or doc, resp
 
 The function assigned to `fromItemToDoc` property will be called before adding or editing data to the database. The `fromDocToItem` counterpart will be called before returning the database document to the HotCollection items array. Both functions receive an object as parameter and return another object as the transformed data.
 
-### Ordering and Limiting
-
-The `orderBy` object has a field property that takes a string corresponding to a field name in the collection and a `sort` property which can hold 'desc' or 'asc'. This will be used to order the items' property inside the HotCollection.
-
-Together with ordering you can limit the number of retrieved documents using the `limit` option. It accepts an integer as the max number of records to retrieve.
-
 ### Querying
 
-This feature is only supported by the Firestore adapter for now. But as said before, since the HotCollection `items` is an array, you can do fancy stuff with arrays functions with the result provided by any adapter. But sometimes, for performance or security reasons you need to filter at the backend. No problem, we have the `where` options.
+In-memory and localStorage are very simple data structures and most type of collection filtering and ordering can be done applying array functions like `filter` and `map`. But Airtable and Firestore offer this kind of feature directly from their servers. This can be useful, for performance and security reasons. Even so, they operate with differently approaches.
 
-The `where` value must be an array with one or more objects. Every object in the array must have three properties with string values: `field`, `operator` and `value`. Supported operators are  
+To deal with that HotCollection that use Airtable and Firestore adapters will support a query object inside properties that will be applied to read requests to the backend. What is inside the query object differs from both adapters. I will explain both.
 
-These where clauses will be applied to the collection using the Firestore `where` method. The HotCollection content of that instance won't be the whole collection anymore, but the result of the applied filters.
+#### Airtable
 
-Be aware, one of the tradeoffs for Firestore efforts to improve performance is querying limitations. Filters operators could be considered few and some can be used only once. 
+In any Airtable database there is a help link in the top right corner. There you can access the API excellent help documentation. In the list records sections, you can check the detail of all the reading options: `fields`, `filterByFormula`, `maxRecords`, `pageSize`, `sort`, `view`, `cellFormat`, `timeZone` and `userLocale`.
 
-The documentation on querying Firestore data is excellent, you can read the [guide here](https://firebase.google.com/docs/firestore/query-data/queries). HotCollection will mirror this behavior. 
+You treat the HotCollection query object as a holder of these Airtable options. They will be passed as is to the Airtable's select `method`.
+
+#### Firebase
+
+Firestore applies reading configurations in a different way, basically chaining different methods over a query reference object. You can learn a lot reading this [guide](https://firebase.google.com/docs/firestore/query-data/queries).
+
+HotCollection will support `where`, `orderBy` and `limit` options. To use them you pass properties with the same names inside the query options' property.
+
+The `orderBy` property must be an object with `field` and `sort` properties. The `field` will take a string corresponding to a field name in the collection and `sort` property hold `'desc'` or `'asc'` values.
+
+Together with ordering you can limit the number of retrieved documents using the `limit` property. It accepts an integer as the max number of records to retrieve.
+
+The `where` value must be an array with one or more objects. Every object in the array must have three properties with string values: `field`, `operator` and `value`.
+
+Be aware, one of the tradeoffs for Firestore efforts to improve performance is querying limitations. Filters operators could be considered few and some can be used only once. Read the guided i reference above and other official docs for details. 
 
 That's enough of the good stuff, now we talk about boring things.
 
@@ -308,7 +316,7 @@ This package is very simple in its nature and has tons of limitations. I want to
 
 HotCollection does not handle Firestore subcollections at all. It can't load or manipulate them. Not as first-level collections or as properties inside high-level items.
 
-Some goals that make people use subcollections could be achieved with array and map fields. Maybe you want to look more into [those options](https://firebase.google.com/docs/firestore/manage-data/data-types).
+Some goals that nudge people to use subcollections could be achieved with array and map fields. Maybe you want to look more into [those options](https://firebase.google.com/docs/firestore/manage-data/data-types).
 
 ## Joins
 
