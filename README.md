@@ -134,6 +134,12 @@ The observer function receives an array of items as its first and only argument.
       });
     }
 
+You can stop running a particular observer by calling the function returned from the subscribe method.
+
+      const employeeCollection = new HotCollection('employees', { adapter });
+      const unsub = employeeCollection.subscribe(employees => ... );
+      unsub();
+
 Cool! But what is really inside that argument HotCollection passes to all observers?
 
 ### What is a Hot-Collection Item?
@@ -268,13 +274,11 @@ Another difference in safe mode is that when `del` method is called. Instead of 
 
 So, deleted documents will still be available in the HotCollection. But, since the `items` parameter passed to subscriptions are arrays, you can take advantage of array functions to filter out deleted items. Or more exciting, you could let the user choose when to show or hide deleted objects. 
 
-### Converters
+### Converting Docs and Items
 
-Adapters are functions applied to every item or doc before passing them to the app code or database. They are useful if your data structure does not match how you use it in the business and UI layers.
+Converter is option object with two functions applied to every item or doc, respectively, before passing them to the app code or database. They are useful if your data structure does not match how you use it in the business and UI layers.
 
-Both functions receive an object as parameter and return another object as the transformed data.
-
-The function assigned to `fromItemToDoc` property will be called before adding and setting data to the database. The `fromDocToItem` counterpart will be called before returning the database document to the HotCollection items array.
+The function assigned to `fromItemToDoc` property will be called before adding or editing data to the database. The `fromDocToItem` counterpart will be called before returning the database document to the HotCollection items array. Both functions receive an object as parameter and return another object as the transformed data.
 
 ### Ordering and Limiting
 
