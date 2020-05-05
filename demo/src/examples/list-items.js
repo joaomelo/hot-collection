@@ -12,8 +12,8 @@ function renderListItemsExample (examplesEl, adapter) {
   renderListItems(byId('list-items-example'), adapter);
 };
 
-function renderListItems (el, adapter) {
-  const employeeCollection = new HotCollection('employees', { adapter });
+function renderListItems (el, options) {
+  const employeeCollection = new HotCollection('employees', options);
   employeeCollection.subscribe(employees => {
     el.innerHTML = employees.length <= 0
       ? '<p>no employees found</p>'

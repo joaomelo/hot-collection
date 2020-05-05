@@ -1,18 +1,18 @@
 import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { byId, query } from '../helpers';
 
-function renderDelItemExample (examplesEl, adapter) {
+function renderDelItemExample (examplesEl, options) {
   const sectionEl = document.createElement('section');
   sectionEl.innerHTML = `
     <h3 class="example-title">Example: Del Employee</h3>
     <div id="del-item-example" class="example-content"></div>
     `;
   examplesEl.appendChild(sectionEl);
-  renderDelItem(byId('del-item-example'), adapter);
+  renderDelItem(byId('del-item-example'), options);
 };
 
-function renderDelItem (el, adapter) {
-  const employeeCollection = new HotCollection('employees', { adapter });
+function renderDelItem (el, options) {
+  const employeeCollection = new HotCollection('employees', options);
 
   employeeCollection.subscribe(employees => {
     el.innerHTML = employees.length <= 0

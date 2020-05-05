@@ -1,7 +1,7 @@
 import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { byId, resetAllTextInputs } from '../helpers';
 
-function renderAddItemExample (examplesEl, adapter) {
+function renderAddItemExample (examplesEl, options) {
   const sectionEl = document.createElement('section');
   sectionEl.innerHTML = `
     <h3 class="example-title">Example: Add Employee</h3>
@@ -18,11 +18,11 @@ function renderAddItemExample (examplesEl, adapter) {
   `;
   examplesEl.appendChild(sectionEl);
 
-  renderAddItems(byId('add-item-example'), adapter);
+  renderAddItems(byId('add-item-example'), options);
 };
 
-function renderAddItems (el, adapter) {
-  const employeeCollection = new HotCollection('employees', { adapter });
+function renderAddItems (el, options) {
+  const employeeCollection = new HotCollection('employees', options);
 
   byId('btn-add-item').addEventListener('click', () => {
     employeeCollection.add({

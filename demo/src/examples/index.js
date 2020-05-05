@@ -6,12 +6,12 @@ import { renderDelItemExample } from './del-item';
 // import { renderFilterBackendExample } from './examples/filter-backend';
 // import { renderFilterClientExample } from './examples/filter-client';
 
-function renderExamples (examplesEl, adapter) {
+function renderExamples (examplesEl, options) {
   examplesEl.innerHTML = '<h2>Examples</h2>';
-  renderListItemsExample(examplesEl, adapter);
-  renderAddItemExample(examplesEl, adapter);
-  renderSetItemExample(examplesEl, adapter);
-  renderDelItemExample(examplesEl, adapter);
+  renderListItemsExample(examplesEl, options);
+  renderAddItemExample(examplesEl, options);
+  renderSetItemExample(examplesEl, options);
+  renderDelItemExample(examplesEl, options);
 }
 
 export { renderExamples };

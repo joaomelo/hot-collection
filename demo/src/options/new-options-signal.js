@@ -14,9 +14,13 @@ servicesSubject.subscribe(({ firestore, airtable }) => {
   adapters.airtable = { airtable: airtable || null };
 });
 
-const adapterSubject = new BehaviorSubject(adapters.inMemory);
+const newOptionsSignal = new BehaviorSubject(adapters.inMemory);
 adapterChoiceSubject.subscribe(adapterChoosed => {
-  adapterSubject.next(adapters[adapterChoosed]);
+  const options = {
+    saveMode: 'safe',
+    adapter: adapters[adapterChoosed]
+  };
+  newOptionsSignal.next(options);
 });
 
-export { adapterSubject };
+export { newOptionsSignal };
