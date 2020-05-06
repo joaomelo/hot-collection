@@ -8,7 +8,7 @@ import { byId } from './helpers';
 import { renderAdapterChooser, newOptionsSignal } from './options';
 import { renderExamples } from './examples';
 
-renderAdapterChooser(byId('adapter'));
+renderAdapterChooser(byId('options'));
 newOptionsSignal.subscribe(options => {
   renderExamples(byId('examples'), options);
 });

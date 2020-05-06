@@ -2,9 +2,7 @@ import { renderListItemsExample } from './list-items';
 import { renderAddItemExample } from './add-item';
 import { renderSetItemExample } from './set-item';
 import { renderDelItemExample } from './del-item';
-// import { renderSubExample } from './examples/sub';
-// import { renderFilterBackendExample } from './examples/filter-backend';
-// import { renderFilterClientExample } from './examples/filter-client';
+import { renderQueryItemsExample } from './query-items';
 
 function renderExamples (examplesEl, options) {
   examplesEl.innerHTML = '<h2>Examples</h2>';
@@ -12,6 +10,7 @@ function renderExamples (examplesEl, options) {
   renderAddItemExample(examplesEl, options);
   renderSetItemExample(examplesEl, options);
   renderDelItemExample(examplesEl, options);
+  renderQueryItemsExample(examplesEl, options);
 }
 
 export { renderExamples };

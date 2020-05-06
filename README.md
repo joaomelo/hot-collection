@@ -77,26 +77,11 @@ Airtable is a productivity app that works like a super powered excel spreadsheet
 
 Notice you will need an Airtable package for that. The [github website](https://github.com/Airtable/airtable.js) has details about installing and using the library. 
 
-You must be aware the Airtable API is somewhat limited. It does not provide a way to receive notifications when data changes in the server. To approximate the experience to real time data, HotCollection will inefficiently load the table every two seconds (i know, i know... is due to improve). 
-
-You can personalize the load frequency by passing an `interval` property in the adapter with an integer value. Be aware that Airtable imposes time limits to API calls to its servers. Let's check our code again:
-
-    import Airtable from 'airtable';
-    import HotCollection from '@joaomelo/hot-collection';
-
-    const apiKey = 'foobar';
-    const baseId = 'foobar';
-    const airtable = new Airtable({ apiKey });
-    const adapter = { 
-      airtable: airtable.base(baseId),
-      interval: 30 // seconds
-    };
-
-    employeesCollection = new HotCollection('employees', { adapter })
+You must be aware the Airtable API is somewhat limited. It does not provide a way to receive notifications when data changes in the server. To approximate the experience to real time data, HotCollection will load the table on creation and after every write operation. 
 
 ### Firestore
 
-Firestore is a awesome google product, part of the Firebase suite service. It is a document storage database very feature rich. To create a HotCollection instance linked to a Firestore's collection server you pass the Firestore instance in a `firestore` property inside the `adapter`. See bellow:
+Firestore is a awesome google product, part of the Firebase suite service. It is a document based database very feature rich. To create a HotCollection instance linked to a Firestore's collection server you pass the Firestore instance in a `firestore` property inside the `adapter`. See bellow:
 
     import * as firebase from 'firebase/app';
     import 'firebase/firestore';
