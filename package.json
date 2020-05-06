@@ -1,6 +1,6 @@
 {
   "name": "@joaomelo/hot-collection",
-  "version": "0.8.13",
+  "version": "0.8.14",
   "description": "Hot-Collection is a javascript library that abstracts database's collections of documents in simple to use objects. Those collection objects automatically load data when it changes in the database, exposes CRUD actions as methods and offers complimentary features like data versioning and transformations. Hot-Collection supports In-Memory, Local Storage, Firestore and Airtable connections.",
   "main": "lib/dist/index.js",
   "scripts": {
