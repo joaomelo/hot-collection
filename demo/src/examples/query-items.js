@@ -2,6 +2,7 @@ import HotCollection from '__lib'; // '@joaomelo/hot-collection';
 import { byId, query } from '../helpers';
 
 function renderQueryItemsExample (examplesEl, options) {
+  if (!(options.adapter.firestore || options.adapter.airtable)) return;
   const sectionEl = document.createElement('section');
   sectionEl.innerHTML = `
     <h3>Example: Query Items</h3>
@@ -22,6 +23,9 @@ function renderQueryItemsExample (examplesEl, options) {
   examplesEl.appendChild(sectionEl);
 
   query('.ctl-qry-items').forEach(sel => sel.addEventListener('change', () => renderQryItems(byId('qry-items-example'), options)));
+
+  var event = new Event('change');
+  byId('ipt-qry-items-max').dispatchEvent(event);
 };
 
 function renderQryItems (el, options) {
