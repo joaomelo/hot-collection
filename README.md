@@ -125,6 +125,8 @@ You can stop running a particular observer by calling the function returned from
       const unsub = employeeCollection.subscribe(employees => ... );
       unsub();
 
+You can also call methods `getItem`, passing an id, and `getItems` to grab latest version retrieved of an item and items, respectively. This will not make a call to the database. Just make a synchronous read based on the last data read from the database.
+
 Cool! But what is really inside that argument HotCollection passes to all observers?
 
 ### What is a Hot-Collection Item?
