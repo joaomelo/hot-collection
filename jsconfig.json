@@ -4,9 +4,17 @@
     "target": "es6",
     "checkJs": false,
     "baseUrl": "./",
+    "paths": {
+      "__demo/*": [
+        "demo/src/*"
+      ],
+      "__lib/*": [
+        "lib/src/*"
+      ]
+    }
   },
-  "include": [
-    "src/**/*",
-    "babel.config.js"
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

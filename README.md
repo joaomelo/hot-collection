@@ -2,13 +2,13 @@
 
 Hot-Collection is a javascript library that abstracts database's collections of documents in simple to use objects. Those collection objects automatically load data when it changes in the database, exposes CRUD actions as methods and offers complimentary features like data versioning and transformations. Hot-Collection supports In-Memory, Local Storage, Firestore and Airtable connections.
 
-## Motivation
+# Motivation
 
 As an independent solo developer, I find myself somewhat obsessed with solutions that reduce the amount of repeated code I have do produce. 
 
 In this regard [Firestore](https://firebase.google.com/products/firestore), [Airtable](https://airtable.com/) and [Local Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) are awesome tools. They are fast, reliable, well documented and easy to use. Even so, since they are designed for a broad spectrum of use cases, the need to duplicate code to manage data between web apps is not uncommon.
 
-This library tries to encapsulate some of that replication in a single reusable class. The goal is to help fellow developers focus more on business and less on technology.
+This library tries to encapsulate some of that replication in a single reusable class. The goal is to help fellow developers in similar cases focus more on business and less on technology.
 
 # Usage
 
@@ -20,24 +20,24 @@ After that, you listen to updates by providing observer functions to the `subscr
 
 Let us explore that in more detail.
 
-## Getting Started
+# Getting Started
 
 Install with npm.
 
     npm install @joaomelo/hot-collection
 
-The first step is to import and instantiate a HotCollection object. The only required parameter is the collection name. Let's see.
+The first step is to import and instantiate a HotCollection object. The parameters are the collection name and an options object. Let's see.
 
     import HotCollection from '@joaomelo/hot-collection';
-    itemsCollection = new HotCollection('items')
+    itemsCollection = new HotCollection('items', { adapter: 'in-memory' });
 
 The `itemsCollection` methods will now expose features for reading and writing data in an very simple in-memory database. But you can also create collections linked to localStorage, airtable and firebase by passing adapters in second parameter. Next section explains that in detail.
 
-## Adapters
+# Connecting to Databases With Adapters
 
-### In-memory
+## In-memory
 
-This is the default adapter, you can even omit it if no other option is needed. Please keep in mind that i'm calling it a database with very big quotation marks around it, because it's really just a fancy javascript Map object.
+This is the most basic adapter. Please keep in mind that i'm calling it a database with very big quotation marks around it, because it's really just a fancy javascript Map object.
 
 To create a new HotCollection instance to manage employee data with the in-memory database, you set the value of the adapter property in the option object to `'in-memory'`, like this:
 
@@ -46,7 +46,7 @@ To create a new HotCollection instance to manage employee data with the in-memor
 
 Be aware the all data will be erased even between page reloads. This is probably only useful for rapid prototyping, testing or experimenting with the library.
 
-### Local Storage
+## Local Storage
 
 Local storage is one type of [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API). It holds data in the user browser associated with the app address.
 
@@ -59,7 +59,7 @@ To create a HotCollection instance linked to local storage we use an adapter obj
 
 Client storages have limited security and are unable to sync between devices. But local storage can be useful for off-line use cases or a way to cut time and cost to reach some development milestone. For example, in early stages of your app, when you still didn't implemented plans quotas or user data limits you can raise the app in production tied to local storage for demo purposes.
 
-### Airtable
+## Airtable
 
 Airtable is a productivity app that works like a super powered excel spreadsheet. You can check its tons of features in the [app site](https://airtable.com/). Airtable exposes an API to read and write to databases' tables. To link a HotCollection instance to an Airtable table, you provide a reference to the desired Airtable's base as an `airtable` property inside the adapter. See:
 
@@ -79,7 +79,7 @@ Notice you will need an Airtable package for that. The [github website](https://
 
 You must be aware the Airtable API is somewhat limited. It does not provide a way to receive notifications when data changes in the server. To approximate the experience to real time data, HotCollection will load the table on creation and after every write operation. 
 
-### Firestore
+## Firestore
 
 Firestore is a awesome google product, part of the Firebase suite service. It is a document based database very feature rich. To create a HotCollection instance linked to a Firestore's collection server you pass the Firestore instance in a `firestore` property inside the `adapter`. See bellow:
 
@@ -100,7 +100,7 @@ Even Firestore been the only true database technology currently supported by Hot
 
 Fortunately, Firestore has a security rules feature that allows you to guard the database. There is a lot of content on how to use them and adhere to the best practices. Tp start, you can look at the official docs in [Get started with Cloud Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started) and also check this great Fireship guy talking about [How to Hack a Firebase App](https://www.youtube.com/watch?v=b7PUm7LmAOw).
 
-## Reading Data
+# Reading Data
 
 HotCollection offers a `subscribe` method to read data and listen to data updates. 
 
@@ -129,7 +129,7 @@ You can also call methods `getItem`, passing an id, and `getItems` to grab lates
 
 Cool! But what is really inside that argument HotCollection passes to all observers?
 
-### What is a Hot-Collection Item?
+## What is a Hot-Collection Item?
 
 The items parameter passed to all observer functions is pretty much the copy of the original documents inside the database. But there are a few differences.
 
@@ -137,11 +137,11 @@ HotCollection will inject inside every item the corresponding document key and c
 
 You can also configure how HotCollection convert between the database docs to HotCollection items and vice-versa. But before that, let's discuss how to add, edit and delete data. 
 
-## Manipulating Data
+# Manipulating Data
 
 HotCollection provides three methods to manipulate database documents: `add`, `set` and `del`.
 
-### Adding
+## Adding
 
 To add a document just pass an item to the HotCollection `add` method. An automatic id will be provided  according to the database technology. Bellow, we write a function to add employees to a collection.
 
@@ -166,7 +166,7 @@ To add a document just pass an item to the HotCollection `add` method. An automa
       });
     };
 
-### Updating
+## Updating
 
 We have two methods to update documents: `set` and `update`. Both receive an item as parameter. The item object must have an `id` property.
 
@@ -208,7 +208,7 @@ If a document with that `id` already exists in the database collection, all it's
       resetAllTextInputs();
     }
 
-### Deleting
+## Deleting
 
 To delete a document just call the `del` method in any HotCollection object. The only parameter is the document id. With few lines, we can implement a delete feature. See below.
 
@@ -231,7 +231,7 @@ To delete a document just call the `del` method in any HotCollection object. The
 
 Just like that, we have a simple CRUD app syncing with a database. Sweet! But before wrapping up, let us talk about a few more optional configurations and some concerns you should take care of.
 
-## Options
+# Options
 
 Until now we only used the adapter property of the options object. But you can direct the HotCollection behavior in more ways. Below we expand all the options properties. In the following subsections we discuss each one.
 
@@ -247,7 +247,7 @@ Until now we only used the adapter property of the options object. But you can d
 
 Let's talk about those options.
 
-### Versions to the rescue
+## Versions to the rescue
 
 The property `saveMode` accepts one of two string values: `'default'` or `'safe'`. Until here, this text described the default way. When set to `'safe'` an interesting behavior is activated.
 
@@ -261,25 +261,25 @@ Another difference in safe mode is that when `del` method is called. Instead of 
 
 So, deleted documents will still be available in the HotCollection. But, since the `items` parameter passed to subscriptions are arrays, you can take advantage of array functions to filter out deleted items. Or more exciting, you could let the user choose when to show or hide deleted objects. 
 
-### Converting Docs and Items
+## Converting Docs and Items
 
 Converter is option object with two functions applied to every item or doc, respectively, before passing them to the app code or database. They are useful if your data structure does not match how you use it in the business and UI layers.
 
 The function assigned to `fromItemToDoc` property will be called before adding or editing data to the database. The `fromDocToItem` counterpart will be called before returning the database document to the HotCollection items array. Both functions receive an object as parameter and return another object as the transformed data.
 
-### Querying
+## Querying
 
 In-memory and localStorage are very simple data structures and most type of collection filtering and ordering can be done applying array functions like `filter` and `map`. But Airtable and Firestore offer this kind of feature directly from their servers. This can be useful, for performance and security reasons. Even so, they operate with differently approaches.
 
 To deal with that HotCollection that use Airtable and Firestore adapters will support a query object inside properties that will be applied to read requests to the backend. What is inside the query object differs from both adapters. I will explain both.
 
-#### Airtable
+### Querying in Airtable
 
 In any Airtable database there is a help link in the top right corner. There you can access the API excellent help documentation. In the list records sections, you can check the detail of all the reading options: `fields`, `filterByFormula`, `maxRecords`, `pageSize`, `sort`, `view`, `cellFormat`, `timeZone` and `userLocale`.
 
 You treat the HotCollection query object as a holder of these Airtable options. They will be passed as is to the Airtable's select `method`.
 
-#### Firebase
+### Querying in Firebase
 
 Firestore applies reading configurations in a different way, basically chaining different methods over a query reference object. You can learn a lot reading this [guide](https://firebase.google.com/docs/firestore/query-data/queries).
 
@@ -292,6 +292,48 @@ Together with ordering you can limit the number of retrieved documents using the
 The `where` value must be an array with one or more objects. Every object in the array must have three properties with string values: `field`, `operator` and `value`.
 
 Be aware, one of the tradeoffs for Firestore efforts to improve performance is querying limitations. Filters operators could be considered few and some can be used only once. Read the guided i reference above and other official docs for details. 
+
+# Late and Evolving Connections
+
+In some use cases you might need to update the connection data (when users sign in or sign out, for example) but still offer a persisted reference to the collection for others modules. 
+
+In that scenario you can instantiate a `HotCollection` passing only the collection's name. Then call the `connect` method with the options object as parameter to establish a new data connection. Every time the `connect` method is called, the `HotCollection` instance is rebooted.
+
+While `connect` isn't called with the parameter options, the HotCollection will expose an empty array of data and throw exceptions if any data manipulation methods are invoked. The example below illustrates the use case.
+
+But the `HotCollection` instance will hold subscriptions between connections and always expose an items property, making it a reliable source of events to UI modules for example.
+
+``` js
+import HotCollection from '@joaomelo/hot-collection';
+import { auth, firedb } from './services';
+
+// every module can import this collection as reliable
+// store of appropriate teams items
+export const teamsCollection = new HotCollection('teams');
+
+// let's assume this auth object signals an event 
+// every authentication state change with the user
+auth.subscribe(user => {
+  if (!user) {
+    // without options, connect will simply 
+    // reset the HotCollection data items to [] 
+    teamsCollection.connect();
+  } else {
+    // ignites a new connection 
+    // with proper user query
+    teamsCollection.connect({
+      adapter: { firestore: firedb },
+      query: {
+        where: [{
+          field: 'userId',
+          operator: '==',
+          value: user.id
+        }]
+      }
+    });
+  }
+});
+```
 
 That's enough of the good stuff, now we talk about boring things.
 
