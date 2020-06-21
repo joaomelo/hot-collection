@@ -303,9 +303,7 @@ In some use cases you might need to update the connection data (when users sign 
 
 In that scenario you can instantiate a `HotCollection` passing only the collection's name. Then call the `connect` method with the options object as parameter to establish a new data connection. Every time the `connect` method is called, the `HotCollection` instance is rebooted.
 
-While `connect` isn't called with the parameter options, the HotCollection will expose an empty array of data and throw exceptions if any data manipulation methods are invoked. The example below illustrates the use case.
-
-But the `HotCollection` instance will hold subscriptions between connections and always expose an items property, making it a reliable source of events to UI modules for example.
+While `connect` can't be called without options, we can use `disconnect` to reset the HotCollection state to an empty array of data. A disconnected `HotCollection` will throw exceptions if any data manipulation methods are invoked. The example below illustrates the use case.
 
 ``` js
 import HotCollection from '@joaomelo/hot-collection';
@@ -319,9 +317,9 @@ export const teamsCollection = new HotCollection('teams');
 // every authentication state change with the user
 auth.subscribe(user => {
   if (!user) {
-    // without options, connect will simply 
-    // reset the HotCollection data items to [] 
-    teamsCollection.connect();
+    // disconnect will reset the
+    // HotCollection data items to [] 
+    teamsCollection.disconnect();
   } else {
     // ignites a new connection 
     // with proper user query
@@ -338,6 +336,8 @@ auth.subscribe(user => {
   }
 });
 ```
+
+A `HotCollection` instance will hold subscriptions between connections and always expose an items property, making it a reliable source of events to UI modules for example.
 
 That's enough of the good stuff, now we talk about boring things.
 
