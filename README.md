@@ -1,3 +1,5 @@
+![npm version](https://img.shields.io/npm/v/@joaomelo/hot-collection?style=plastic)
+
 # Hot-Collection
 
 Hot-Collection is a javascript library that abstracts database's collections of documents in simple to use objects. Those collection objects automatically load data when it changes in the database, exposes CRUD actions as methods and offers complimentary features like data versioning and transformations. Hot-Collection supports In-Memory, Local Storage, Firestore and Airtable connections.
