@@ -43,8 +43,10 @@ This is the most basic adapter. Please keep in mind that i'm calling it a databa
 
 To create a new HotCollection instance to manage employee data with the in-memory database, you set the value of the adapter property in the option object to `'in-memory'`, like this:
 
-    const employeeCollection = new HotCollection('employees', { adapter: 'in-memory' });
-    const otherEmployeeCollection = new HotCollection('employees'); // this works too
+``` js
+const employeeCollection = new HotCollection('employees', { adapter: 'in-memory' });
+const otherEmployeeCollection = new HotCollection('employees'); // this works too
+```
 
 Be aware the all data will be erased even between page reloads. This is probably only useful for rapid prototyping, testing or experimenting with the library.
 
