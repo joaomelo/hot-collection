@@ -83,6 +83,8 @@ Notice you will need an Airtable package for that. The [github website](https://
 
 You must be aware the Airtable API is somewhat limited. It does not provide a way to receive notifications when data changes in the server. To approximate the experience to real time data, HotCollection will load the table on creation and after every write operation. 
 
+If you will add or edit multiple Airtable items in a very short span of time, the consecutive table loading will probably break your app. I recommend you implement your own solution if that is your use case. I want to provide something to mitigate this problem in the future, but there is no estimate when that will be done. 
+
 ## Firestore
 
 Firestore is a awesome google product, part of the Firebase suite service. It is a document based database very feature rich. To create a HotCollection instance linked to a Firestore's collection server you pass the Firestore instance in a `firestore` property inside the `adapter`. See bellow:
