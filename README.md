@@ -1,4 +1,4 @@
-![npm version](https://img.shields.io/npm/v/@joaomelo/hot-collection?style=plastic)
+------- THIS PROJECT IS NO LONGER MAINTAINED. --------
 
 # Hot-Collection
 
